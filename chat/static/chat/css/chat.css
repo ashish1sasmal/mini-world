@@ -1,0 +1,148 @@
+/*/////////////////////////////////*/
+/*/////////  chat styles  /////////*/
+/*/////////////////////////////////*/
+
+
+
+/* .card{
+    background-image: url('https://blog.1a23.com/wp-content/uploads/sites/2/2020/02/Desktop.png');
+} */
+
+
+body{
+
+    background-image: url('https://blog.1a23.com/wp-content/uploads/sites/2/2020/02/Desktop.png');
+
+}
+
+.chat
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+}
+
+.chat li
+{
+    margin-bottom: 10px;
+    width: 80%;
+}
+
+
+.chat li .chat-body p
+{
+    margin: 0;
+    /* color: #777777; */
+}
+
+
+.chat-care
+{
+    overflow-y: scroll;
+    height: 550px;
+    background-image: url('https://blog.1a23.com/wp-content/uploads/sites/2/2020/02/Desktop.png');
+}
+.chat-care .chat-img
+{
+    width: 50px;
+    height: 50px;
+}
+.chat-care .img-circle
+{
+    border-radius: 50%;
+}
+.chat-care .chat-img
+{
+    display: inline-block;
+}
+.chat-care .chat-body
+{
+    display: inline-block;
+    max-width: 80%;
+    border-radius: 12.5px;
+    padding: 15px;
+}
+.chat-care .chat-body strong
+{
+  color: #19404d;
+}
+
+.chat-care .admin
+{
+    text-align: right ;
+    float: right;
+}
+
+.chat-care .admin .chat-body
+{
+    background-color: #29ff90;
+}
+
+.chat-care .agent .chat-body strong
+{
+    color: #ffffff;
+}
+
+.chat-care .agent .chat-body
+{
+    background-color: #29adff;
+}
+
+.chat-care .admin p
+{
+    text-align: left ;
+}
+.chat-care .agent
+{
+    text-align: left ;
+    float: left;
+}
+.chat-care .left
+{
+    float: left;
+}
+.chat-care .right
+{
+    float: right;
+}
+
+.clearfix {
+  clear: both;
+}
+
+
+
+
+::-webkit-scrollbar-track
+{
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+    box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+}
+
+.element {
+  display: inline-flex;
+  align-items: center;
+}
+i.fa-camera {
+  margin: 10px;
+  cursor: pointer;
+  font-size: 30px;
+}
+i:hover {
+  opacity: 0.6;
+}

@@ -1,0 +1,27 @@
+{% extends "chat/base.html" %}
+{% load static %}
+{% block content %}
+
+<table class="table caption-top">
+  <caption>Chat History</caption>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Code</th>
+      <th scope="col">Members</th>
+      <th scope="col">Date/Time</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for ch in chlist %}
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock content %}

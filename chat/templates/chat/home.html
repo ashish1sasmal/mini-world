@@ -1,0 +1,92 @@
+{% extends "chat/base.html" %}
+{% block content %}
+      <div class="container mt-3">
+          <div class="jumbotron" align="center">
+            <h1 class="display-4">My Mini Space <i class="fas fa-globe-americas"></i></h1>
+            <p class="lead"><i>"I am a Lost Boy from Neverland Usually hanging out with Peter Pan"</i></p>
+            <hr class="my-4">
+            <p>Start Communicating...</p>
+            <p class="lead">
+
+              {% if user.is_authenticated %}
+              <a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#exampleModalCenter">Enter Code</a>
+              <a class="btn btn-warning btn-lg" href="{% url 'chat:newchat' %}" role="button">Start Chat</a>
+              <a class="btn btn-success btn-lg" href="#" role="button">My Chat</a>
+              {% else %}
+              <a class="btn btn-success btn-lg" href="#" role="button" data-toggle="modal" data-target="#loginModal">Login</a>
+              {% endif %}
+            </p>
+          </div>
+
+          <table class="table table-bordered border mt-2">
+            <thead  class="table-dark">
+              <tr>
+                <th scope="col" class="col-1">#</th>
+                <th scope="col" class="col-3">Code</th>
+                <th scope="col" class="col-6">Members</th>
+                <th scope="col" class="col-2">Time</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for ch in chlist %}
+              <tr>
+                <th scope="row">1</th>
+                <td><a href="{% url 'chat:room' ch.code %}">{{ch.code}}</a></td>
+                <td>{% for user in ch.members.all %}{{user}}, {% endfor %}</td>
+                <td>--</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+      </div>
+
+      <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+  <div class="modal-dialog modal-dialog-centered" role="document" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Login</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body"  align="center">
+          <form class="form-inline" method="POST">
+              {% csrf_token %}
+           <div class="form-group mx-sm-3 mb-2">
+             <label for="inputPassword2" class="sr-only">Code</label>
+             <input type="email" class="form-control" name="email" id="inputEmail" placeholder="example@abc.com">
+           </div>
+           <button type="submit" class="btn btn-primary mb-2 ml-2">Submit</button>
+         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+  <div class="modal-dialog modal-dialog-centered" role="document" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Enter Meeting Code</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body"  align="center">
+          <form class="form-inline" method="POST">
+              {% csrf_token %}
+           <div class="form-group mx-sm-3 mb-2">
+             <label for="inputPassword2" class="sr-only">Code</label>
+             <input type="text" class="form-control" name="code" id="inputPassword2" placeholder="xxx-xxx-xxxx">
+           </div>
+           <button type="submit" class="btn btn-primary mb-2 ml-2">Enter</button>
+         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
