@@ -16,6 +16,10 @@
               <a class="btn btn-success btn-lg" href="#" role="button" data-toggle="modal" data-target="#loginModal">Login</a>
               {% endif %}
             </p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'chat:logout' %}">Logout</a>
+            {% else %}
+            {% endif %}
           </div>
 
           <table class="table table-bordered border mt-2">

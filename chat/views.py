@@ -20,6 +20,10 @@ def gen(n):
         var2 += random.choice(string.ascii_letters)
     return var2
 
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect('chat:home')
 
 def home(request):
     if request.method == "GET":
