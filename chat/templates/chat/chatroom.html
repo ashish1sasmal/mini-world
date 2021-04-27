@@ -24,7 +24,7 @@
 
 <br>
 <div class="container">
-  <div class="row">
+  <div class="row md-2">
       <div class="col-md-3">
           <div class="card">
               <div class="card-header text-center">
@@ -37,7 +37,16 @@
                       {% endfor %}
                   </ul>
               </div>
-              <div class="card-footer">
+          </div>
+
+          <div class="card mt-2 ">
+              <div class="card-header text-center">
+                  <span>Pending Requests</span>
+              </div>
+              <div class="card-body">
+                  <ul id="pending_list">
+
+                  </ul>
               </div>
           </div>
       </div>
@@ -243,7 +252,7 @@
                                         <span class="glyphicon glyphicon-time"></span></small>
                                 </div>
                                 <p>
-                                    <a href="https://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i></a> ${data.file_names[i]}
+                                    <a href="http://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i></a> ${data.file_names[i]}
                                 </p>
                             </div>
                         </li>
@@ -262,7 +271,7 @@
                                     <strong class="right primary-font">${data.username}</strong>
                                 </div>
                                 <p>
-                                    <a href="https://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i></a>  ${data.file_names[i]}
+                                    <a href="http://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i></a>  ${data.file_names[i]}
                                 </p>
                             </div>
                         </li>
@@ -283,7 +292,7 @@
                     document.getElementById(data.del_msg_id).style.display = "none";
                 }
             }
-            else{
+            else if(data.action){
                 if (data.action){
                     var el = document.getElementById(data.username);
                     if (el != null) {
@@ -299,7 +308,27 @@
                     document.getElementById(data.username).style.display = "none";
                 }
             }
+
+            else{
+                document.getElementById("pending_list").innerHTML+=
+                `
+                <li id='${data.username}_req'>${data.username}  <a href="#" onclick="reqaction('${data.username}',true)"><p style="display: inline;">&#9989;</p></a>     <a href="#" onclick="reqaction('${data.username}',false)"><p style="display: inline;">&#10060;</p></a></li>
+                `
+            }
     };
+
+    function reqaction(username,action){
+        document.getElementById(`${username}_req`).remove();;
+        const formData = new FormData();
+         formData.append('csrfmiddlewaretoken', csrf_token)
+         formData.append("code","{{room_code}}");
+         formData.append("username",username);
+         formData.append("action",action);
+         fetch("{% url 'chat:requestaction' %}", {method: "POST", body: formData}).then(res=>res.json())
+         .then(data=>{
+         });
+
+    }
 
     </script>
 

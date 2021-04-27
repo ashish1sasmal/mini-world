@@ -1,6 +1,49 @@
 {% extends "chat/base.html" %}
 {% block content %}
+
+<style media="screen">
+    #cover-spin {
+    position:fixed;
+    width:100%;
+    left:0;right:0;top:0;bottom:0;
+    background-color: rgba(255,255,255,0.7);
+    z-index:9999;
+    display:none;
+}
+
+@-webkit-keyframes spin {
+	from {-webkit-transform:rotate(0deg);}
+	to {-webkit-transform:rotate(360deg);}
+}
+
+@keyframes spin {
+	from {transform:rotate(0deg);}
+	to {transform:rotate(360deg);}
+}
+
+#cover-spin::after {
+    content:'';
+    display:block;
+    position:absolute;
+    left:48%;top:40%;
+    width:40px;height:40px;
+    border-style:solid;
+    border-color:black;
+    border-top-color:transparent;
+    border-width: 4px;
+    border-radius:50%;
+    -webkit-animation: spin .8s linear infinite;
+    animation: spin .8s linear infinite;
+}
+
+
+
+</style>
+
+<div id="cover-spin"><h2 align="center" class="mt-5"><b>Please Wait...</b></h2></div>
+
       <div class="container mt-3">
+
           <div class="jumbotron" align="center">
             <h1 class="display-4">My Mini Space <i class="fas fa-globe-americas"></i></h1>
             <p class="lead"><i>"I am a Lost Boy from Neverland Usually hanging out with Peter Pan"</i></p>
@@ -12,10 +55,17 @@
               <a class="btn btn-primary btn-lg mt-1" href="#" role="button" data-toggle="modal" data-target="#exampleModalCenter">Enter Code</a>
               <a class="btn btn-warning btn-lg mt-1" href="{% url 'chat:newchat' %}" role="button">Start Chat</a>
               <a class="btn btn-success btn-lg mt-1" href="#" role="button">My Chat</a>
+              <br>
+              <!-- <form id="searchform" class="search-bar mb-3" action="{% url 'chat:autocomplete' %}">
+               <div class="position-relative col-3">
+                   <input type="text" class="form-control form-control-light" name="mysearch" placeholder="People, groups & messages" id="mysearch">
+                   <input type="hidden" name="mysearchid" value="" id="mysearchid">
+                   <span class="mdi mdi-magnify"></span>
+               </div>
+           </form> -->
               {% else %}
               <a class="btn btn-success btn-lg mt-1" href="#" role="button" data-toggle="modal" data-target="#loginModal">Login</a>
               {% endif %}
-            </p>
             {% if user.is_authenticated %}
             <a href="{% url 'chat:logout' %}">Logout</a>
             {% else %}
@@ -79,18 +129,77 @@
         </button>
       </div>
       <div class="modal-body"  align="center">
-          <form class="form-inline" method="POST">
-              {% csrf_token %}
-           <div class="form-group mx-sm-3 mb-2">
+          <form id="searchform" class="search-bar form-inline" >
+              <input type="hidden" name="mysearchid" value="" id="mysearchid">
+           <div class="position-relative col-8">
              <label for="inputPassword2" class="sr-only">Code</label>
-             <input type="text" class="form-control" name="code" id="inputPassword2" placeholder="xxx-xxx-xxxx">
+             <input type="text" class="form-control form-control-light" name="mysearch" placeholder="People, groups & messages" id="inputcode">
+
            </div>
-           <button type="submit" class="btn btn-primary mb-2 ml-2">Enter</button>
+           <button type="button" onclick="check();" class="btn btn-primary mb-2 ml-2">Enter</button>
          </form>
+
+         <!-- <form id="searchform" class="search-bar mb-3" action="{% url 'chat:autocomplete' %}">
+          <div class="position-relative col-8">
+              <input type="text" class="form-control form-control-light" name="mysearch" placeholder="People, groups & messages" id="mysearch">
+              <input type="hidden" name="mysearchid" value="" id="mysearchid">
+             <button type="button" onclick="check();" class="btn btn-primary mb-2 ml-2">Enter</button>
+          </div>
+      </form> -->
       </div>
     </div>
   </div>
 </div>
 
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+<script type="text/javascript">
+
+    {% if request.user.is_authenticated %}
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    chatSocket = new WebSocket(ws_scheme+'://' +window.location.host +'/ws/request/{{request.user.username}}/');
+
+    function check(){
+        document.getElementById("cover-spin").style.display = "block";
+        val = document.getElementById("inputcode").value;
+        fetch('/checkgroup/'+val).then(res=>res.json())
+        .then(data=>{
+            if (data.status == "200"){
+                window.location = "/chat/"+val;
+            }
+        });
+        }
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data);
+        if (data.result == "true"){
+            window.location = "/chat/"+data.code;
+        }
+        else{
+            document.getElementById("cover-spin").style.display = "none";
+            alert("Your request is denied.")
+        }
+
+    }
+
+    $("#inputcode").autocomplete({
+    source:'{% url 'chat:autocomplete' %}',
+    focus: function( event, ui ) {
+          $( "#inputcode" ).val( ui.item.label );
+             return false;
+       },
+       select: function( event, ui ) {
+          $( "#inputcode" ).val( ui.item.label );
+          $( "#mysearchid" ).val( ui.item.value );
+          return false;
+       }
+});
+
+$( "#inputcode" ).autocomplete( "option", "appendTo", "#searchform" );
+
+document.getElementsByClassName("ui-helper-hidden-accessible")[0].style.display = "none";
+{% endif %}
+</script>
 {% endblock content %}

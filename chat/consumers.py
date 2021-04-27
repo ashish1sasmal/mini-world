@@ -91,13 +91,22 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
                     'del_msg_id' : del_msg_id
                 }
             )
-        else:
+        elif message:
             await self.updateDB(message=message,username=username)
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'chatroom_message',
                     'message': message,
+                    'username': username,
+                }
+            )
+
+        else:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'request_status',
                     'username': username,
                 }
             )
@@ -132,6 +141,12 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
             'username': username,
         }))
 
+    async def request_status(self,event):
+        username = event['username']
+        await self.send(text_data=json.dumps({
+            'username': username,
+        }))
+
     @database_sync_to_async
     def updateDB(self,**kwargs):
         del_msg_id = kwargs.get("del_msg_id",None)
@@ -157,3 +172,43 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
             print("Message Saved!")
         return True
     pass
+
+class AcceptRequest(AsyncWebsocketConsumer):
+    async def connect(self):
+        user = self.scope['user']
+        self.room_name = user.username
+        self.room_group_name = user.username
+
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        await self.accept()
+
+    async def receive(self, text_data):
+        tjson = json.loads(text_data)
+        result = tjson.get("result")
+        code = tjson.get("code")
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'request_status',
+                'result': result,
+                'code': code
+            }
+        )
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    async def request_status(self,event):
+        result = event["result"]
+        code = event['code']
+        await self.send(text_data=json.dumps({
+            'result': result,
+            'code': code,
+        }))

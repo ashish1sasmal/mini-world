@@ -11,6 +11,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from django.http import JsonResponse
+from django.db.models import Count
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 def gen(n):
     import string
@@ -19,6 +23,35 @@ def gen(n):
     for i in range(n):
         var2 += random.choice(string.ascii_letters)
     return var2
+
+@login_required
+def autocomplete(request):
+    if request.is_ajax():
+        query = request.GET.get("term", "")
+        # profiles = User.objects.filter(username__icontains=query)
+        results = []
+        # ext = ChatGroup.objects.annotate(c=Count('members')).filter(c=2,members__in=[request.user])
+        # for profile in profiles:
+        #     group = ext.filter(members__in=[profile]).last()
+        #     results.append({
+        #         "label":profile.first_name+" "+profile.last_name,
+        #         "value":group.code
+        #         })
+        groups = ChatGroup.objects.annotate(c=Count('members')).filter(code__icontains=query)
+        for g in groups:
+            results.append({
+                "label":g.code,
+                "value":g.code
+            })
+        if results==[]:
+            results.append({"label":"No Match Found","value":""})
+        return JsonResponse(results,safe=False)
+
+    elif request.method=="GET":
+        code = request.GET.get("mysearchid")
+        group = ChatGroup.objects.get(code = code)
+        return redirect("chat:room" ,room_code=code)
+
 
 @login_required
 def user_logout(request):
@@ -32,7 +65,7 @@ def home(request):
             for i in ChatMessage.objects.filter(user=request.user).values("group").distinct():
                 print(i)
                 chlist.add(ChatGroup.objects.get(id=i["group"]))
-            for i in ChatGroup.objects.filter(user=request.user):
+            for i in ChatGroup.objects.filter(members__in=[request.user]):
                 chlist.add(i)
         context = {}
         context["chlist"] = list(chlist)
@@ -60,7 +93,7 @@ def download_file(request,msg_id):
     msg = ChatMessage.objects.get(id=msg_id)
     if msg.file == None:
         return HttpResponse("Sorry file doesn't exists")
-    return redirect(msg.download_temp_url())
+    return msg.download_temp_url()
 
 @login_required
 def messageFileUpload(request):
@@ -88,6 +121,46 @@ def startChat(request):
     return redirect("chat:room",room_code=new.code)
 
 @login_required
+def checkgroup(request,room_code):
+    group = ChatGroup.objects.filter(code=room_code)
+    if group.count()==0:
+        print("[ No such meeting found! ]")
+        return JsonResponse({"msg":"No such meeting found!","status":"400"})
+    else:
+        group = group.first()
+        if request.user in group.members.all():
+            return JsonResponse({"msg":"Accepted","status":"200"},status=200)
+        else:
+            print("Reject")
+            msg = {}
+            msg["type"] =  'request_status'
+            msg["username"] = request.user.username
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(room_code,msg)
+            print("Just After")
+            return JsonResponse({"msg":"Rejected","status":"403"},status=403)
+
+@login_required
+def requestaction(request):
+    if request.method == "POST":
+        print("Inside request action")
+        username = request.POST.get("username",None)
+        code= request.POST.get("code",None)
+        user = User.objects.get(username=username)
+        group = ChatGroup.objects.get(code = code)
+        action = request.POST.get("action",None)
+        if action=="true":
+            group.members.add(user)
+        print(f"[ Action taken {action} ]")
+        msg = {}
+        msg["type"] =  'request_status'
+        msg["result"] = action
+        msg["code"] = code
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(username,msg)
+        return JsonResponse({"action":action,"username":username})
+
+@login_required
 def chat(request,room_code=None):
     group = ChatGroup.objects.filter(code=room_code)
     if group.count()==0:
@@ -103,6 +176,8 @@ def chat(request,room_code=None):
     else:
         username = gen(5)
 
+    if request.user not in group.members.all():
+        return render(request,"chat/lobby.html")
     group.members.add(request.user)
     messages = ChatMessage.objects.filter(group=group).order_by("created_on")
     context["username"] = username

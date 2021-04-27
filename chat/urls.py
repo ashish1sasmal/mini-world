@@ -10,4 +10,8 @@ urlpatterns = [
     path('upload/',views.messageFileUpload , name='uploadmsg'),
     path('downloadfile/<int:msg_id>/',views.download_file,name="download_file"),
     path('logout/',views.user_logout,name='logout'),
+    path('search/', views.autocomplete, name='autocomplete'),
+    path('checkgroup/<str:room_code>/',views.checkgroup,name="checkgroup"),
+    path('requestaction/',views.requestaction,name="requestaction"),
+
 ]
