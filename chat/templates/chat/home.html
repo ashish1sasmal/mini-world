@@ -9,11 +9,11 @@
             <p class="lead">
 
               {% if user.is_authenticated %}
-              <a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#exampleModalCenter">Enter Code</a>
-              <a class="btn btn-warning btn-lg" href="{% url 'chat:newchat' %}" role="button">Start Chat</a>
-              <a class="btn btn-success btn-lg" href="#" role="button">My Chat</a>
+              <a class="btn btn-primary btn-lg mt-1" href="#" role="button" data-toggle="modal" data-target="#exampleModalCenter">Enter Code</a>
+              <a class="btn btn-warning btn-lg mt-1" href="{% url 'chat:newchat' %}" role="button">Start Chat</a>
+              <a class="btn btn-success btn-lg mt-1" href="#" role="button">My Chat</a>
               {% else %}
-              <a class="btn btn-success btn-lg" href="#" role="button" data-toggle="modal" data-target="#loginModal">Login</a>
+              <a class="btn btn-success btn-lg mt-1" href="#" role="button" data-toggle="modal" data-target="#loginModal">Login</a>
               {% endif %}
             </p>
             {% if user.is_authenticated %}
