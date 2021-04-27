@@ -9,7 +9,7 @@ ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY')
 SECRET_KEY = os.environ.get('AWS_SECRET_KEY')
 
 s3 = boto3.resource('s3',aws_access_key_id= ACCESS_KEY,aws_secret_access_key= SECRET_KEY)
-s3client = boto3.client('s3',aws_access_key_id=ACCESS_KEY,aws_secret_access_key= SECRET_KEY, config = Config(signature_version = 's3v4', region_name = 'us-west-1'))
+s3client = boto3.client('s3',aws_access_key_id=ACCESS_KEY,aws_secret_access_key= SECRET_KEY, config = Config(signature_version = 's3v4', region_name = 'ap-south-1'))
 
 
 
