@@ -24,6 +24,14 @@ def gen(n):
         var2 += random.choice(string.ascii_letters)
     return var2
 
+
+@login_required
+def leavegroup(request,room_code):
+    group = ChatGroup.objects.get(code=room_code)
+    group.members.remove(request.user)
+    print(f"{request.user} left {room_code}")
+    return JsonResponse({"status":"200"})
+
 @login_required
 def autocomplete(request):
     if request.is_ajax():

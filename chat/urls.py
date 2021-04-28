@@ -13,5 +13,5 @@ urlpatterns = [
     path('search/', views.autocomplete, name='autocomplete'),
     path('checkgroup/<str:room_code>/',views.checkgroup,name="checkgroup"),
     path('requestaction/',views.requestaction,name="requestaction"),
-
+    path('leavegroup/<str:room_code>/',views.leavegroup,name="leavegroup"),
 ]

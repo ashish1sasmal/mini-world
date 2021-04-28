@@ -48,7 +48,7 @@
             <h1 class="display-4">My Mini Space <i class="fas fa-globe-americas"></i></h1>
             <p class="lead"><i>"I am a Lost Boy from Neverland Usually hanging out with Peter Pan"</i></p>
             <hr class="my-4">
-            <p>Start Communicating...</p>
+            <p>Hi! <b>{{request.user.username}}</b> Start Communicating...</p>
             <p class="lead">
 
               {% if user.is_authenticated %}
@@ -78,16 +78,16 @@
                 <th scope="col" class="col-1">#</th>
                 <th scope="col" class="col-3">Code</th>
                 <th scope="col" class="col-6">Members</th>
-                <th scope="col" class="col-2">Time</th>
+                <th scope="col" class="col-2">Action</th>
               </tr>
             </thead>
             <tbody>
                 {% for ch in chlist %}
-              <tr>
+              <tr id="{{ch.code}}">
                 <th scope="row">1</th>
                 <td><a href="{% url 'chat:room' ch.code %}">{{ch.code}}</a></td>
                 <td>{% for user in ch.members.all %}{{user}}, {% endfor %}</td>
-                <td>--</td>
+                <td><a class="btn btn-danger btn-sm" href="#" onclick="leave('{{ch.code}}');" role="button">Leave</a></td>
               </tr>
               {% endfor %}
             </tbody>
@@ -159,6 +159,18 @@
     {% if request.user.is_authenticated %}
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
     chatSocket = new WebSocket(ws_scheme+'://' +window.location.host +'/ws/request/{{request.user.username}}/');
+
+    function leave(val){
+            fetch('/leavegroup/'+val).then(res=>res.json())
+            .then(data=>{
+                if (data.status == "200"){
+                    document.getElementById(val).style.display = "none";
+                }
+                else{
+                    alert("Some error occured. Try again");
+                }
+            });
+    }
 
     function check(){
         document.getElementById("cover-spin").style.display = "block";
