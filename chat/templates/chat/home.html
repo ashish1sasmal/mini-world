@@ -55,7 +55,9 @@
               <a class="btn btn-primary btn-lg mt-1" href="#" role="button" data-toggle="modal" data-target="#exampleModalCenter">Enter Code</a>
               <a class="btn btn-warning btn-lg mt-1" href="{% url 'chat:newchat' %}" role="button">Start Chat</a>
               <a class="btn btn-success btn-lg mt-1" href="#" role="button">My Chat</a>
+              <button onclick="getLocation()">Try It</button>
               <br>
+              <p id="demo"></p>
               <!-- <form id="searchform" class="search-bar mb-3" action="{% url 'chat:autocomplete' %}">
                <div class="position-relative col-3">
                    <input type="text" class="form-control form-control-light" name="mysearch" placeholder="People, groups & messages" id="mysearch">
@@ -71,7 +73,7 @@
             {% else %}
             {% endif %}
           </div>
-
+          <h5><b>Recent Chats</b></h5>
           <table class="table table-bordered border mt-2">
             <thead  class="table-dark">
               <tr>
@@ -155,6 +157,26 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <script type="text/javascript">
+
+    var x = document.getElementById("demo");
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    function showPosition(position) {
+      x.innerHTML = "Latitude: " + position.coords.latitude +
+      "<br>Longitude: " + position.coords.longitude;
+    }
+function report(state) {
+  console.log('Permission ' + state);
+}
+
+handlePermission();
 
     {% if request.user.is_authenticated %}
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
