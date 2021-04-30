@@ -3,6 +3,334 @@
 {% block content %}
 
 
-<h1>hi</h1>
+<link rel="stylesheet" href="{% static 'chat/css/chat.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<style media="screen">
+    .card-link
+    {
+    position:relative;
+    }
+
+</style>
+
+<br>
+<div class="container">
+  <div class="row md-2">
+      <div class="col-md-3">
+          <div class="card">
+              <div class="card-header text-center">
+                  <span>Online Users</span>
+              </div>
+              <div class="card-body">
+                  <ul id="online_list">
+                      {% for user in group.online.all %}
+                        <li id="{{user.username}}"> {{user}}</li>
+                      {% endfor %}
+                  </ul>
+              </div>
+          </div>
+
+          <div class="card mt-2 ">
+              <div class="card-header text-center">
+                  <span>Pending Requests</span>
+              </div>
+              <div class="card-body">
+                  <ul id="pending_list">
+
+                  </ul>
+              </div>
+          </div>
+      </div>
+        <div class="col-md-9 mx-auto">
+            <div class="card">
+                <div class="card-header text-center">
+                    <span class="col-3">Chat Box</span>
+                    <span class="col-8"></span>
+                    <span class="col-3"><a href="#" onclick="delMessage(-1);"><i class="fas fa-trash"></i></a></span>
+                </div>
+                <div class="card-body chat-care" id="chat-body">
+                    <ul class="chat" id="chat_history">
+                        {% for msg in cmessages %}
+                            {% if msg.user.username == username %}
+                            <li class="admin clearfix">
+                                <span class="chat-img right clearfix  mx-2">
+                                    <img src="https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701_1280.png" alt="Admin" class="img-circle" width="50" />
+                                </span>
+                                <div class="chat-body clearfix">
+                                    <div class="header clearfix">
+                                        <small class="left text-muted"><span class="glyphicon glyphicon-time"></span></small>
+                                        <strong class="right primary-font">{{msg.user.username}}</strong>
+                                    </div>
+                                    <p>
+                                        {% if msg.file %}
+                                            <a href="{% url 'chat:download_file' msg.id %}" target="_blank"><i class="fas fa-file-download"></i></a>
+                                            {{ msg.file }}
+                                        {% else %}
+                                            {{msg.content}}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </li>
+                            {% else %}
+                            <li class="agent clearfix">
+                                <span class="chat-img left clearfix mx-2">
+                                    <img src="http://getdrawings.com/free-icon/profile-png-icon-59.png" alt="Agent" class="img-circle" width="50" />
+                                </span>
+                                <div class="chat-body clearfix">
+                                    <div class="header clearfix">
+                                        <strong class="primary-font">{{msg.user.username}}</strong> <small class="right text-muted">
+                                            <span class="glyphicon glyphicon-time"></span></small>
+                                    </div>
+                                    <p>
+                                        {% if msg.file %}
+                                            <a href="{% url 'chat:download_file' msg.id %}"  target="_blank"><i class="fas fa-file-download"></i></a>
+                                            {{ msg.file }}
+                                        {% else %}
+                                            {{msg.content}}
+                                        {% endif %}
+
+                                    </p>
+                                </div>
+                            </li>
+                            {% endif %}
+
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="input-group">
+                        <input type="file" name="file" id="myfile" style="display:none;" multiple>
+                        <textarea id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." ></textarea>
+                        <span class="input-group-btn">
+                            <h4><i class="fas fa-paperclip ml-2" id="fileid"></i></h4>
+                            <button class="btn btn-primary btn-sm ml-1" id="btn-chat">
+                                Send</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{{ username|json_script:"user_username" }}
+    {{ room_code|json_script:"room-code" }}
+
+    <script type="text/javascript">
+        window.scrollTo(0,document.getElementById('chat-body').scrollHeight);
+        $("#fileid").click(function () {
+          $("input[type='file']").trigger('click');
+        });
+
+        const user_username = JSON.parse(document.getElementById('user_username').textContent);
+        const roomCode = JSON.parse(document.getElementById('room-code').textContent);
+        const csrf_token = '{{ csrf_token }}';
+        var chatSocket = null;
+        if (roomCode != null)
+        {
+
+            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+            chatSocket = new WebSocket(ws_scheme+'://' +window.location.host +'/ws/chat/' +roomCode +'/');
+        }
+
+        function delMessage(val){
+            if (chatSocket){
+                chatSocket.send(JSON.stringify({
+                "del_msg_id" : val
+                }));
+            }
+        }
+
+        document.querySelector('#btn-chat').onclick = function (e) {
+            const messageInputDom = document.getElementById('btn-input');
+            const message = messageInputDom.value;
+
+             const files = document.querySelector('[type=file]').files
+             if (files.length > 0)
+             {
+                 const formData = new FormData()
+                 formData.append('csrfmiddlewaretoken', csrf_token)
+                 for (let i = 0; i < files.length; i++) {
+                     let file = files[i]
+                     formData.append('myfile[]', file)
+                 }
+                 formData.append("room_code","{{room_code}}");
+                 formData.append("username","{{username}}");
+                 fetch("{% url 'chat:uploadmsg' %}", {method: "POST", body: formData}).then(res=>res.json())
+                 .then(data=>{
+                     chatSocket.send(JSON.stringify({
+                         'file_ids':data.file_ids,
+                         "file_names":data.file_names,
+                         'file_sizes':data.file_sizes,
+                         'username': user_username,
+                     }));
+                      document.getElementById("myfile").value = "";
+                 });
+
+             }
+             else{
+                 chatSocket.send(JSON.stringify({
+                     'message': message,
+                     'username': user_username,
+                 }));
+                 messageInputDom.value = '';
+             }
+
+
+        };
+
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            console.log(data);
+            // document.querySelector('#chat-text').value += (data.username + ': ' + data.message + '\n');
+            if (data.message){
+                var dict={"class":"admin clearfix","span_class":"right"}
+                if (user_username != data.username)
+                {
+                     document.getElementById('chat_history').innerHTML+=
+                    `
+                    <li class="agent clearfix">
+                        <span class="chat-img left clearfix mx-2">
+                            <img src="http://getdrawings.com/free-icon/profile-png-icon-59.png" alt="Agent" class="img-circle" width="50" />
+                        </span>
+                        <div class="chat-body clearfix">
+                            <div class="header clearfix">
+                                <strong class="primary-font">${data.username}</strong> <small class="right text-muted">
+                                    <span class="glyphicon glyphicon-time"></span></small>
+                            </div>
+                            <p>
+                                ${data.message}
+                            </p>
+                        </div>
+                    </li>
+                    `
+                }
+                else{
+                    document.getElementById('chat_history').innerHTML+=
+                    `
+                    <li class="admin clearfix">
+                        <span class="chat-img right clearfix  mx-2">
+                            <img src="https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701_1280.png" alt="Admin" class="img-circle" width="50" />
+                        </span>
+                        <div class="chat-body clearfix">
+                            <div class="header clearfix">
+                                <small class="left text-muted"><span class="glyphicon glyphicon-time"></span></small>
+                                <strong class="right primary-font">${data.username}</strong>
+                            </div>
+                            <p>
+                                ${data.message}
+                            </p>
+                        </div>
+                    </li>
+                    `
+                }
+            }
+            else if (data.file_ids){
+                for (let i = 0; i < data.file_ids.length; i++) {
+                    if (user_username != data.username)
+                    {
+                         document.getElementById('chat_history').innerHTML+=
+                        `
+                        <li class="agent clearfix">
+                            <span class="chat-img left clearfix mx-2">
+                                <img src="http://getdrawings.com/free-icon/profile-png-icon-59.png" alt="Agent" class="img-circle" width="50" />
+                            </span>
+                            <div class="chat-body clearfix">
+                                <div class="header clearfix">
+                                    <strong class="primary-font">${data.username}</strong> <small class="right text-muted">
+                                        <span class="glyphicon glyphicon-time"></span></small>
+                                </div>
+                                <p>
+                                    <a href="http://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i></a> ${data.file_names[i]}
+                                </p>
+                            </div>
+                        </li>
+                        `
+                    }
+                    else{
+                        document.getElementById('chat_history').innerHTML+=
+                        `
+                        <li class="admin clearfix">
+                            <span class="chat-img right clearfix  mx-2">
+                                <img src="https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701_1280.png" alt="Admin" class="img-circle" width="50" />
+                            </span>
+                            <div class="chat-body clearfix">
+                                <div class="header clearfix">
+                                    <small class="left text-muted"><span class="glyphicon glyphicon-time"></span></small>
+                                    <strong class="right primary-font">${data.username}</strong>
+                                </div>
+                                <p>
+                                    <a href="http://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i></a>  ${data.file_names[i]}
+                                </p>
+                            </div>
+                        </li>
+                        `
+                    }
+                }
+            }
+            else if (data.del_msg_id){
+                if (data.del_msg_id == -1){
+                    var divsToHide = document.getElementsByClassName("clearfix"); //divsToHide is an array
+                    for(var i = 0; i < divsToHide.length; i++){
+                        divsToHide[i].style.visibility = "hidden"; // or
+                        divsToHide[i].style.display = "none"; // depending on what you're doing
+                    }
+                    alert("All Messages deleted!");
+                }
+                else{
+                    document.getElementById(data.del_msg_id).style.display = "none";
+                }
+            }
+            else if(data.action){
+                if (data.action){
+                    var el = document.getElementById(data.username);
+                    if (el != null) {
+                        document.getElementById(data.username).style.display = "block";
+                    } else {
+                        document.getElementById("online_list").innerHTML+=
+                        `
+                        <li id='${data.username}'>${data.username}</li>
+                        `
+                    }
+                }
+                else{
+                    document.getElementById(data.username).style.display = "none";
+                }
+            }
+
+            else{
+                document.getElementById("pending_list").innerHTML+=
+                `
+                <li id='${data.username}_req'>${data.username}  <a href="#" onclick="reqaction('${data.username}',true)"><p style="display: inline;">&#9989;</p></a>     <a href="#" onclick="reqaction('${data.username}',false)"><p style="display: inline;">&#10060;</p></a></li>
+                `
+            }
+    };
+
+    function reqaction(username,action){
+        document.getElementById(`${username}_req`).remove();;
+        const formData = new FormData();
+         formData.append('csrfmiddlewaretoken', csrf_token)
+         formData.append("code","{{room_code}}");
+         formData.append("username",username);
+         formData.append("action",action);
+         fetch("{% url 'chat:requestaction' %}", {method: "POST", body: formData}).then(res=>res.json())
+         .then(data=>{
+         });
+
+    }
+
+    </script>
+
 
 {% endblock content %}
