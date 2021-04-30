@@ -184,8 +184,6 @@ def chat(request,room_code=None):
     else:
         username = gen(5)
 
-    if request.user not in group.members.all():
-        return render(request,"chat/lobby.html")
     group.members.add(request.user)
     messages = ChatMessage.objects.filter(group=group).order_by("created_on")
     context["username"] = username
