@@ -22,7 +22,7 @@ class ChatGroup(models.Model):
 
 class ChatMessage(models.Model):
     content = models.TextField(blank=True,null=True)
-    unique_file = models.CharField(max_length=50, blank=True,null=True)
+    unique_file = models.CharField(max_length=100, blank=True,null=True)
     file = models.CharField(max_length=500,blank=True,null=True)
     group = models.ForeignKey(ChatGroup,on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
