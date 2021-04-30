@@ -167,7 +167,7 @@
         x.innerHTML = "Geolocation is not supported by this browser.";
       }
     }
-    
+
     function showPosition(position) {
       x.innerHTML = "Latitude: " + position.coords.latitude +
       "<br>Longitude: " + position.coords.longitude;
@@ -176,8 +176,6 @@
 function report(state) {
   console.log('Permission ' + state);
 }
-
-handlePermission();
 
     {% if request.user.is_authenticated %}
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
