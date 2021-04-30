@@ -35,7 +35,7 @@ class ChatMessage(models.Model):
         super(ChatMessage, self).save(**kwargs)
 
     def download_temp_url(self):
-        return s3_service.download_file(self.unique_file)
+        return s3_service.create_temp_url(self.unique_file)
 
 
 @receiver(post_delete, sender=ChatMessage)

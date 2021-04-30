@@ -113,6 +113,5 @@ def download_file(file_path, bucket_name = 'letsmeet'):
 def create_temp_url(file_path, expiry_in = 3600, bucket_name = 'letsmeet'):
     return s3client.generate_presigned_url('get_object', Params = {
         "Bucket":bucket_name,
-        "Key":file_path,
-        'ACL': 'public-read'
+        "Key":file_path
     },ExpiresIn = expiry_in)

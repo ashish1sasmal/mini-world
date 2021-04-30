@@ -96,11 +96,11 @@ def home(request):
 
 @login_required
 def download_file(request,msg_id):
-    # Download File ; check if already exists in user's filemanager; If not download from sender's filemanager (if exist there)
+    print("New")
     msg = ChatMessage.objects.get(id=msg_id)
     if msg.file == None:
         return HttpResponse("Sorry file doesn't exists")
-    return msg.download_temp_url()
+    return redirect(msg.download_temp_url())
 
 @login_required
 def messageFileUpload(request):
