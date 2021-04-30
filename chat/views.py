@@ -70,9 +70,8 @@ def home(request):
     if request.method == "GET":
         chlist = set()
         if request.user.is_authenticated:
-            for i in ChatMessage.objects.filter(user=request.user).values("group").distinct():
-                print(i)
-                chlist.add(ChatGroup.objects.get(id=i["group"]))
+            for i in ChatGroup.objects.filter(user=request.user):
+                chlist.add(i)
             for i in ChatGroup.objects.filter(members__in=[request.user]):
                 chlist.add(i)
         context = {}
