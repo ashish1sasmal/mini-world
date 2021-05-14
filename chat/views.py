@@ -29,6 +29,13 @@ def gen(n):
 def leavegroup(request,room_code):
     group = ChatGroup.objects.get(code=room_code)
     group.members.remove(request.user)
+    if request.user == group.user:
+        if group.members.all().count()!=0:
+            group.user = group.members.first()
+            group.save()
+        else:
+            group.delete()
+            print("Group deleted")
     print(f"{request.user} left {room_code}")
     return JsonResponse({"status":"200"})
 
@@ -123,6 +130,8 @@ def messageFileUpload(request):
 @login_required
 def startChat(request):
     new = ChatGroup(code=gen(10),user=request.user)
+    new.save()
+    new.members.add(request.user)
     new.save()
     print("[ Group created. ]")
     return redirect("chat:room",room_code=new.code)
