@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <title>Mini World</title>
+    <style media="screen">
+
+    body{
+        max-height: 100%;
+    }
+
+        .dot {
+          height: 12px;
+          width: 12px;
+          background-color: #13b002;
+          border-radius: 50%;
+          display: inline-block;
+        }
+
+        .active-button{
+            border-color:#646664;
+
+        }
+
+        .mycontent-left {
+              border-right: 1px solid #c1c5c9;
+            }
+
+            li:hover{
+            background-color: #e6e6e6;
+            }
+
+            .chat-online {
+        color: #34ce57
+    }
+    #cover-spin {
+    position:fixed;
+    width:100%;
+    left:0;right:0;top:0;bottom:0;
+    background-color: rgba(255,255,255,0.7);
+    z-index:9999;
+    display:none;
+}
+
+@-webkit-keyframes spin {
+    from {-webkit-transform:rotate(0deg);}
+    to {-webkit-transform:rotate(360deg);}
+}
+
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+#cover-spin::after {
+    content:'';
+    display:block;
+    position:absolute;
+    left:48%;top:40%;
+    width:40px;height:40px;
+    border-style:solid;
+    border-color:black;
+    border-top-color:transparent;
+    border-width: 4px;
+    border-radius:50%;
+    -webkit-animation: spin .8s linear infinite;
+    animation: spin .8s linear infinite;
+}
+
+    .chat-offline {
+        color: #e4606d
+    }
+
+    .chat-messages {
+        display: flex;
+        flex-direction: column;
+        height: 400px;
+        overflow-y: scroll
+    }
+
+    .chat-message-left,
+    .chat-message-right {
+        display: flex;
+        flex-shrink: 0
+    }
+
+    .chat-message-left {
+        margin-right: auto
+    }
+
+    .chat-message-right {
+        flex-direction: row-reverse;
+        margin-left: auto
+    }
+    .py-3 {
+        padding-top: 1rem!important;
+        padding-bottom: 1rem!important;
+    }
+    .px-4 {
+        padding-right: 1.5rem!important;
+        padding-left: 1.5rem!important;
+    }
+    .flex-grow-0 {
+        flex-grow: 0!important;
+    }
+    .border-top {
+        border-top: 1px solid #dee2e6!important;
+    }
+
+                </style>
+  </head>
+  <body>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" style="border-bottom:1px solid #c1c5c9;">
+      <div class="container-fluid">
+          <div class="col-3">
+              <a class="navbar-brand" href="#" style="margin-left:60px"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Google_Chat_icon_%282020%29.svg/1200px-Google_Chat_icon_%282020%29.svg.png" alt="" style="width:20px;"> Mini World</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+          </div>
+
+<div class="collapse navbar-collapse col-9" id="navbarNavDropdown">
+    <div class="col-6">
+        <form class="d-flex" >
+            <input type="hidden" name="mysearchid" value="" id="mysearchid">
+            <input class="form-control me-2" type="search" name="mysearch" id="inputcode" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="button" onclick="searchGroup();">Search</button>
+          </form>
+    </div>
+    <div class="col-2">
+
+    </div>
+    <div class="col-3">
+        <ul class="navbar-nav" >
+
+          <li class="nav-item dropdown" id="active_link" style="display:none;">
+                <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
+              <span class="dot"></span> Active
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" onclick="logout();">Logout</a></li>
+            </ul>
+          </li>
+          <li class="nav-item" id="login_link" style="display:none;">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+          </li>
+
+        </ul>
+    </div>
+
+</div>
+</div>
+
+    </nav>
+    <div id="cover-spin"><h2 align="center" class="mt-5"><b>Please Wait...</b></h2></div>
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="searchModalLabel">Enter Room</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="searchModalbody">
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="verifyMember();">Enter</button>
+          </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="modal fade" id="createRoomModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <form >
+                  <div class="modal-body">
+                      <div class="mb-3">
+                          <label for="room_name" class="form-label">Room Name</label>
+                          <input type="text" class="form-control" id="groupName" aria-describedby="emailHelp">
+                          <div id="emailHelp" class="form-text">Choose some funky names</div>
+                        </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="makeGroup();" class="btn btn-primary">Create</button>
+                  </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <form id="loginForm">
+                  <div class="modal-body">
+                      <div class="mb-3">
+                          <label for="room_name" class="form-label">Email</label>
+                          <input type="email" name="emaillogin" class="form-control" id="emaillogin" aria-describedby="emailHelp">
+                        </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="login(this);" class="btn btn-primary">Login</button>
+                  </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="max-height: 500px;margin-left:30px;margin-right:30px;">
+            <div class="col-3 mycontent-left" >
+                <div class="col-12">
+                    <div style="overflow: hidden;" class="mt-2">
+                        <p style="float: left;">My Chats</p>
+
+                        <a style="float: right;color:green;" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-plus" disabled></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#createRoomModal"><i class="far fa-comment-dots" style="margin-right:10px;"></i> Start Chat</a></li>
+                             <li><a class="dropdown-item" href="#"><i class="far fa-keyboard" style="margin-right:10px;"></i>Enter Code</a></li>
+                             <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </div>
+                    <hr style="margin-top:-10px;">
+
+                    <ul id="chatlist" style="margin-left:-20px;">
+                        {% for chat in chlist %}
+
+                            <li style="overflow: hidden;" class="mt-2"  id="{{chat.code}}">
+                                <a href="#" onclick="startChat('{{chat.code}}','{{chat.name}}');"  style="float: left;">{{chat.name}}</a>
+                                <a style="float: right;" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                                <ul class="dropdown-menu">
+                                     <li><a class="dropdown-item" onclick="leavegroup('{{chat.code}}');" href="#"><i class="fas fa-arrow-left" style="margin-right:10px;"></i> Leave Room</a></li>
+                                     <li><a class="dropdown-item" href="#"><i class="fas fa-users" style="margin-right:10px;"></i> Members</a></li>
+                                     <li><a class="dropdown-item" href="#"><i class="fas fa-at" style="margin-right:10px;"></i> Invite via email</a></li>
+                                </ul>
+                            </li>
+
+                        {% endfor %}
+                    </ul>
+
+                </div>
+                <div class="col-12">
+                    Waiting Lobby
+                    <hr style="margin-top:0px;">
+                    <ul class="" id="lobby" style="margin-left:-20px;">
+
+                    </ul>
+                </div>
+            </div>
+        <div class="col-9">
+            <div class="YJ" style="margin-top:150px;" id="landing"><div class="ajp" align="center"><svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path fill="#9AA0A6" fill-rule="evenodd" clip-rule="evenodd" d="m9.96667,0.66663l79.73329,0c5.48142,0 9.96642,4.44 9.96642,9.86667l0,59.19999c0,5.4267 -4.485,9.8667 -9.96642,9.8667l-69.76659,0l-19.93336,19.73302l0,-88.7997c0,-5.42667 4.485,-9.86667 9.96667,-9.86667zm0,69.06665l79.73329,0l0,-59.19999l-79.73329,0l0,59.19999z"></path></svg><h4 class="acY">No conversation selected</h4></div></div>
+            <div class="" style="display:none;" id="convo">
+                <ul class="nav nav-pills mt-2" id="pills-tab" role="tablist">
+
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pills-chat-tab" data-bs-toggle="pill" data-bs-target="#pills-chat" type="button" role="tab" aria-controls="pills-chat" aria-selected="true">Chat</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-files-tab" data-bs-toggle="pill" data-bs-target="#pills-files" type="button" role="tab" aria-controls="pills-files" aria-selected="false">Files</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-members-tab" data-bs-toggle="pill" data-bs-target="#pills-members" type="button" role="tab" aria-controls="pills-members" aria-selected="false">Members</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-online-tab" data-bs-toggle="pill" data-bs-target="#pills-online" type="button" role="tab" aria-controls="pills-online" aria-selected="false">online</button>
+                  </li>
+                  <li style="margin-left:550px;margin-top:10px;">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" ><i class="fas fa-cog"></i></a>
+
+                    <ul class="dropdown-menu">
+                       <li><a href="#" class="dropdown-item" onclick="delMessage(-1);" ><i class="fas fa-trash" style="margin-right:15px;"></i> Clear Chat</a></li>
+                     </ul>
+                  </li>
+
+                </ul>
+                <hr style="margin-top:5px;">
+                <div class="tab-content" id="pills-tabContent">
+                  <div class="tab-pane fade show active" id="pills-chat" role="tabpanel" aria-labelledby="pills-chat-tab">
+                      <div class="position-relative">
+                          <h5 align="center"><span id="groupName2">Group Name </span></h5>
+                      <div class="chat-messages p-4" id="chat_body">
+
+        				</div>
+        			</div>
+
+        			<div class="flex-grow-0 py-3 px-4 border-top">
+        				<div class="input-group">
+        					<input type="text" class="form-control" id="btn-input" placeholder="Type your message">
+                            <input type="file" name="file" id="myfile"  multiple>
+        					<button class="btn btn-primary" id="btn-chat">Send</button>
+        				</div>
+        			</div>
+
+        		     </div>
+                  <div class="tab-pane fade" id="pills-files" role="tabpanel" aria-labelledby="pills-files-tab">
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Sender</th>
+                        <th scope="col">File</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="fileslist">
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>image.jpg</td>
+                        <td>13 April 2021</td>
+                        <td><a href="#">Download</a></td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                  </div>
+                  <div class="tab-pane fade" id="pills-members" role="tabpanel" aria-labelledby="pills-members-tab">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody id="memberslist">
+
+
+                        </tbody>
+                      </table>
+                  </div>
+
+                  <div class="tab-pane fade" id="pills-online" role="tabpanel" aria-labelledby="pills-online-tab">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Members</th>
+                            <th scope="col">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody id="onlinelist">
+
+
+                        </tbody>
+                      </table>
+                  </div>
+                </div>
+
+            </div>
+
+        </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
+
+  {{ user.username|json_script:"user_username" }}
+
+
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+  <script type="text/javascript">
+    {% if login %}
+    document.getElementById('active_link').style.display = "block";
+    {% else %}
+    document.getElementById('login_link').style.display = "block";
+    {% endif %}
+    const csrf_token = '{{ csrf_token }}';
+    const user_username = JSON.parse(document.getElementById('user_username').textContent);
+    // const getFormJSON = (form) => {
+    //   const data = new FormData(form);
+    //   return Array.from(data.keys()).reduce((result, key) => {
+    //     result[key] = data.get(key);
+    //     return result;
+    //   }, {});
+    // };
+
+    var chatSocket=null;
+    var room_code = null;
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    userSocket = new WebSocket(ws_scheme+'://' +window.location.host +'/ws/request/{{user.username}}/');
+
+
+    userSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data);
+        if (data.result == "true"){
+            startChat(val,grpName);
+            document.getElementById("cover-spin").style.display = "none";
+            $('#searchModal').modal('hide');
+            document.getElementById("chatlist").innerHTML=
+            `<li style="overflow: hidden;" class="mt-2"  id="${val}">
+                <a href="#" onclick="startChat('${val}','${groupName}');"  style="float: left;">${grpName}</a>
+                <a style="float: right;" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                <ul class="dropdown-menu">
+                     <li><a class="dropdown-item" onclick="leavegroup('${val}');" href="#"><i class="fas fa-arrow-left"></i> Leave Room</a></li>
+                     <li><a class="dropdown-item" href="#"><i class="fas fa-users"></i> Members</a></li>
+                </ul>
+            </li>
+            `+ document.getElementById("chatlist").innerHTML;
+        }
+        else{
+            document.getElementById("cover-spin").style.display = "none";
+            alert("Your request is denied.")
+        }
+
+    }
+
+    function startChat(roomCode,groupName){
+        if (roomCode != null)
+        {
+
+            room_code = roomCode;
+            if (chatSocket !=null){
+                chatSocket.close();
+            }
+            document.getElementById("landing").style.display = "none";
+            document.getElementById("convo").style.display = "block";
+            document.getElementById("groupName2").textContent = groupName+" ";
+            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+            chatSocket = new WebSocket(ws_scheme+'://' +window.location.host +'/ws/chat/' +roomCode +'/');
+            document.getElementById("chat_body").innerHTML='';
+            document.getElementById("fileslist").innerHTML='';
+            document.getElementById("memberslist").innerHTML='';
+            document.getElementById("onlinelist").innerHTML='';
+            fetch("{% url 'chat:getMessages' %}?grpcode="+roomCode).then(res=>res.json())
+            .then(data=>{
+                var i;
+                    for (i = 0; i < data.msgs.length; i++) {
+                        if (data.msgs[i].type == "INFO"){
+                            document.getElementById('chat_body').innerHTML+=
+                            `
+                            <small align="center" style="margin-top:5px;">${data.msgs[i].content}</small>
+                            `
+
+                        }
+                        else if (data.msgs[i].file){
+                            if ( data.msgs[i].user != {{user.id}})
+                            {
+                                document.getElementById('chat_body').innerHTML+=
+                               `
+                               <div class="chat-message-left pb-4">
+                                   <div>
+                                       <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="${data.msgs[i].username}" width="40" height="40">
+                                       <div class="text-muted small text-nowrap mt-2">2:34 am</div>
+                                   </div>
+                                   <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+                                       <div class="font-weight-bold mb-1">${data.msgs[i].username}</div>
+                                       <a href="http://${window.location.host}/downloadfile/${data.msgs[i].id}"  target="_blank"><i class="fas fa-file-download"></i></a> ${data.msgs[i].file}
+                                   </div>
+                               </div>
+                               `
+                            }
+                            else{
+                                document.getElementById('chat_body').innerHTML+=
+                                `
+                                <div class="chat-message-right pb-4">
+            						<div>
+            							<img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="${data.msgs[i].username}" width="40" height="40">
+            							<div class="text-muted small text-nowrap mt-2">2:33 am</div>
+            						</div>
+            						<div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+            							<div class="font-weight-bold mb-1">You</div>
+            							<a href="http://${window.location.host}/downloadfile/${data.msgs[i].id}"  target="_blank"><i class="fas fa-file-download"></i></a>  ${data.msgs[i].file}
+            						</div>
+            					</div>
+                                `
+                            }
+                        }
+                        else{
+                            if ( data.msgs[i].user != {{user.id}})
+                            {
+                                 document.getElementById('chat_body').innerHTML+=
+                                `
+                                <div class="chat-message-left pb-4">
+                                    <div>
+                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="${data.msgs[i].username}" width="40" height="40">
+                                        <div class="text-muted small text-nowrap mt-2">2:34 am</div>
+                                    </div>
+                                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+                                        <div class="font-weight-bold mb-1">${data.msgs[i].username}</div>
+                                        ${data.msgs[i].content}
+                                    </div>
+                                </div>
+
+                                `
+                            }
+                            else{
+                                document.getElementById('chat_body').innerHTML+=
+                                `
+                                <div class="chat-message-right pb-4">
+            						<div>
+            							<img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="${data.msgs[i].id}" width="40" height="40">
+            							<div class="text-muted small text-nowrap mt-2">2:33 am</div>
+            						</div>
+            						<div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+            							<div class="font-weight-bold mb-1">You</div>
+            							${data.msgs[i].content}
+            						</div>
+            					</div>
+                                `
+                            }
+                        }
+
+                    }
+
+                    for (i = 0; i < data.files.length; i++) {
+                        document.getElementById("fileslist").innerHTML+=
+                        `
+                        <tr>
+                          <th scope="row"><i class="fas fa-arrow-right"></i></th>
+                          <td>${data.files[i].username}</td>
+                          <td>${data.files[i].file}</td>
+                          <td>${data.files[i].created_on}</td>
+                          <td><a href="http://${window.location.host}/downloadfile/${data.msgs[i].id}"  target="_blank"><i class="fas fa-file-download"></i> Download</a></td>
+                        </tr>
+                        `
+                    }
+                    for (i = 0; i < data.members.length; i++) {
+                        document.getElementById("memberslist").innerHTML+=
+                        `
+                        <tr>
+                          <th scope="row"><i class="fas fa-arrow-right"></i></th>
+                          <td>${data.members[i].username}</td>
+                          <td><a href="#">Start Chat</a></td>
+                        </tr>
+                        `
+                    }
+                    // alert(data.online.length)
+                    for (i = 0; i < data.online.length; i++) {
+                        document.getElementById("onlinelist").innerHTML+=
+                        `
+                        <tr id="${data.online[i].username}">
+                          <th scope="row"><i class="fas fa-arrow-right"></i></th>
+                          <td>${data.online[i].username}</td>
+                          <td><a href="#">Start Chat</a></td>
+                        </tr>
+                        `
+                    }
+            });
+
+            document.querySelector('#btn-chat').onclick = function (e) {
+                const messageInputDom = document.getElementById('btn-input');
+                const message = messageInputDom.value;
+
+                 const files = document.querySelector('[type=file]').files
+                 if (files.length > 0)
+                 {
+                     const formData = new FormData()
+                     formData.append('csrfmiddlewaretoken', csrf_token)
+                     for (let i = 0; i < files.length; i++) {
+                         let file = files[i]
+                         formData.append('myfile[]', file)
+                     }
+                     formData.append("room_code",room_code);
+                     formData.append("username","{{user.username}}");
+                     fetch("{% url 'chat:uploadmsg' %}", {method: "POST", body: formData}).then(res=>res.json())
+                     .then(data=>{
+                         chatSocket.send(JSON.stringify({
+                             'file_ids':data.file_ids,
+                             "file_names":data.file_names,
+                             'file_sizes':data.file_sizes,
+                             'username': user_username,
+                         }));
+                          document.getElementById("myfile").value = "";
+                     });
+
+                 }
+                 else{
+                     chatSocket.send(JSON.stringify({
+                         'message': message,
+                         'username': user_username,
+                     }));
+                     messageInputDom.value = '';
+                 }
+            };
+
+            chatSocket.onmessage = function (e) {
+                const data = JSON.parse(e.data);
+                console.log(data);
+                // document.querySelector('#chat-text').value += (data.username + ': ' + data.message + '\n');
+                if (data.message){
+                    if (data.type == 'INFO'){
+                        document.getElementById('chat_body').innerHTML+=
+                        `
+                        <small align="center" style="margin-top:5px;">${data.msgs[i].content}</small>
+                        `
+                    }
+                else{
+                    if (user_username != data.username)
+                    {
+                         document.getElementById('chat_body').innerHTML+=
+                        `
+                        <div class="chat-message-left pb-4">
+                            <div>
+                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="${data.username}" width="40" height="40">
+                                <div class="text-muted small text-nowrap mt-2">2:34 am</div>
+                            </div>
+                            <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+                                <div class="font-weight-bold mb-1">${data.username}</div>
+                                ${data.message}
+                            </div>
+                        </div>
+                        `
+                    }
+                    else{
+                        document.getElementById('chat_body').innerHTML+=
+                        `
+                        <div class="chat-message-right pb-4">
+                            <div>
+                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="${data.username}" width="40" height="40">
+                                <div class="text-muted small text-nowrap mt-2">2:33 am</div>
+                            </div>
+                            <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                                <div class="font-weight-bold mb-1">You</div>
+                                ${data.message}
+                            </div>
+                        </div>
+                        `
+                    }
+                }
+
+                }
+                else if (data.file_ids){
+                    for (let i = 0; i < data.file_ids.length; i++) {
+                        document.getElementById("fileslist").innerHTML+=
+                        `
+                        <tr>
+                          <th scope="row">${i+1}</th>
+                          <td>${data.username}</td>
+                          <td>${data.file_names[i]}</td>
+                          <td>Today</td>
+                          <td><a href="http://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i> Download</a></td>
+                        </tr>
+                        `
+                        if (user_username != data.username)
+                        {
+                            document.getElementById('chat_body').innerHTML+=
+                           `
+                           <div class="chat-message-left pb-4">
+                               <div>
+                                   <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="${data.username}" width="40" height="40">
+                                   <div class="text-muted small text-nowrap mt-2">2:34 am</div>
+                               </div>
+                               <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+                                   <div class="font-weight-bold mb-1">${data.username}</div>
+                                   <a href="http://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i></a> ${data.file_names[i]}
+                               </div>
+                           </div>
+                           `
+                        }
+                        else{
+                            document.getElementById('chat_body').innerHTML+=
+                            `
+                            <div class="chat-message-right pb-4">
+        						<div>
+        							<img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="${data.username}" width="40" height="40">
+        							<div class="text-muted small text-nowrap mt-2">2:33 am</div>
+        						</div>
+        						<div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+        							<div class="font-weight-bold mb-1">You</div>
+        							<a href="http://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i></a>  ${data.file_names[i]}
+        						</div>
+        					</div>
+                            `
+                        }
+                    }
+                }
+                else if (data.del_msg_id){
+                    if (data.del_msg_id == -1){
+                        document.getElementById("fileslist").innerHTML='';
+                        document.getElementById("chat_body").innerHTML='';
+                        alert("All Messages deleted!");
+                    }
+                    else{
+                        document.getElementById(data.del_msg_id).style.display = "none";
+                    }
+                }
+                else if(data.action!=null){
+                    if (data.action){
+                        var el = document.getElementById(data.username);
+                        if (el != null) {
+                            document.getElementById(data.username).style.display = "block";
+                        } else {
+
+
+                            document.getElementById("onlinelist").innerHTML+=
+                            `
+                            <tr id="${data.username}">
+                              <th scope="row"><i class="fas fa-arrow-right"></i></th>
+                              <td>${data.username}</td>
+                              <td><a href="#">Start Chat</a></td>
+                            </tr>
+                            `
+                        }
+                    }
+                    else{
+
+                        document.getElementById(data.username).remove();
+                    }
+                }
+
+                else if(data.request){
+                    document.getElementById("lobby").innerHTML=
+                    `<li style="overflow: hidden;" class="mt-2" id='${data.username}_req'>
+                        <a href="#" onclick="startChat('${data.room_code}','${groupName}');"  style="float: left;">${data.username}</a>
+                        <a style="float: right;color:red;" href="#" onclick="reqaction('${data.username}',false)"><i class="fas fa-times"></i></a>
+                        <a style="float: right;margin-right:10px;color:green;" href="#" onclick="reqaction('${data.username}',true)"><i class="fas fa-check"></i></a>
+
+                    </li>
+                    `+ document.getElementById("lobby").innerHTML;
+                }
+
+        };
+
+        }
+    }
+
+    function delMessage(val){
+        if (chatSocket){
+            chatSocket.send(JSON.stringify({
+            "del_msg_id" : val
+            }));
+        }
+    }
+
+
+    function getCookie(name) {
+       let cookieValue = null;
+           if (document.cookie && document.cookie !== '') {
+               const cookies = document.cookie.split(';');
+               for (let i = 0; i < cookies.length; i++) {
+                   const cookie = cookies[i].trim();
+                   // Does this cookie string begin with the name we want?
+                   if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                       cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                       break;
+                   }
+               }
+           }
+           return cookieValue;
+    }
+
+    async function makePOSTRequest(url,formData){
+        const otherPram={
+            body:formData,
+            method:"POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            mode: "same-origin",
+        };
+
+        let response = await fetch(url, otherPram);
+        let status = await response.status;
+        if (status==200){
+            return true;
+        }
+        else if (status==400){
+            return false;
+        }
+        else if(status == 500){
+            alert("Some error occured. Please try again");
+            return false;
+        }
+    }
+
+    async function makeGETRequest(url){
+        let response = await fetch(url);
+        let status = await response.status;
+        if (status==200){
+            return true;
+        }
+        else if (status==400){
+            return false;
+        }
+        else if(status == 500){
+            alert("Some error occured. Please try again");
+            return false;
+        }
+    }
+
+    async function checkLogin(){
+        res = await makeGETRequest("{% url 'chat:checkLogin' %}");
+        return res;
+    }
+
+    async function logout(){
+        let res = await makeGETRequest("{% url 'chat:logout' %}")
+        if (res){
+            document.getElementById('login_link').style.display = "block";
+            document.getElementById('active_link').style.display = "none";
+        }
+    }
+
+    async function login() {
+        const formData = new FormData();
+         formData.append('emaillogin',document.getElementById('emaillogin').value);
+        res = await makePOSTRequest("{% url 'chat:login' %}",formData);
+        if (res){
+            document.getElementById('login_link').style.display = "none";
+            document.getElementById('active_link').style.display = "block";
+            $('#loginModal').modal('hide');
+        }
+    }
+
+    function reqaction(username,action){
+        document.getElementById(`${username}_req`).remove();;
+        const formData = new FormData();
+         formData.append("code",room_code);
+         formData.append("username",username);
+         formData.append("action",action);
+        const otherPram={
+            body:formData,
+            method:"POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            mode: "same-origin",
+        };
+
+         fetch("{% url 'chat:requestaction' %}", otherPram).then(res=>res.json())
+         .then(data=>{
+
+         });
+
+    }
+
+    function verifyMember(){
+
+        document.getElementById("cover-spin").style.display = "block";
+        val = document.getElementById("mysearchid").value;
+        grpName = document.getElementById('inputcode').value;
+        fetch('/checkgroup/'+val).then(res=>res.json()).then(data=>{
+            if (data.status == "200"){
+                startChat(val,grpName);
+                document.getElementById("cover-spin").style.display = "none";
+                $('#searchModal').modal('hide');
+            }
+        });
+    }
+
+    function searchGroup(){
+        roomCode = document.getElementById("mysearchid").value;
+        if (roomCode==""){
+            alert("Invalid search");
+        }
+        else{
+            fetch("{% url 'chat:getgroupdetails' %}?grpcode="+roomCode).then(res=>res.json())
+            .then(data=>{
+                document.getElementById("searchModalbody").innerHTML="";
+                document.getElementById("searchModalbody").innerHTML+=
+                `
+                <ul>
+                    <li>Name : ${data.name}</li>
+                    <li>Owner : ${data.user}</li>
+                    <li>Online : ${data.online} members</li>
+                    <li>Total : ${data.members}</li>
+                </ul>
+                `
+                $('#searchModal').modal('show');
+            });
+        }
+    }
+
+    function makeGroup(){
+        groupName = document.getElementById('groupName').value;
+        const formData = new FormData();
+         formData.append('groupName', groupName);
+         const otherPram={
+             body:formData,
+             method:"POST",
+             headers: {
+                 "X-CSRFToken": getCookie("csrftoken")
+             },
+             mode: "same-origin",
+         };
+
+         fetch("{% url 'chat:newchat' %}", otherPram).then(res=>res.json())
+         .then(data=>{
+             $('#createRoomModal').modal('hide');
+             document.getElementById("chatlist").innerHTML=
+             `<li style="overflow: hidden;" class="mt-2"  id="${data.room_code}">
+                 <a href="#" onclick="startChat('${data.room_code}','${groupName}');"  style="float: left;">${groupName}</a>
+                 <a style="float: right;" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                 <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" onclick="leavegroup('${data.room_code}');" href="#"><i class="fas fa-arrow-left"></i> Leave Room</a></li>
+                      <li><a class="dropdown-item" href="#"><i class="fas fa-users"></i> Members</a></li>
+                 </ul>
+             </li>
+             `+ document.getElementById("chatlist").innerHTML;
+         });
+    }
+
+    function leavegroup(code){
+        // alert("{% url 'chat:leavegroup' %}?roomcode="+code);
+        fetch("{% url 'chat:leavegroup' %}?roomcode="+code).then(res=>res.json())
+        .then(data=>{
+            document.getElementById(code).remove();
+        });
+    }
+
+    $("#inputcode").autocomplete({
+    source:'{% url 'chat:autocomplete' %}',
+    focus: function( event, ui ) {
+          $( "#inputcode" ).val( ui.item.label );
+             return false;
+       },
+       select: function( event, ui ) {
+          $( "#inputcode" ).val( ui.item.label );
+          $( "#mysearchid" ).val( ui.item.value );
+          return false;
+       }
+});
+
+// $( "#inputcode" ).autocomplete( "option", "appendTo", "#searchform" );
+
+  </script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>

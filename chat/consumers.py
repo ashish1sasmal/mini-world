@@ -31,15 +31,17 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
                     'username': user.username,
                 }
             )
-            print(f"[ {user} added ]")
+
 
     @database_sync_to_async
     def updateUser(self,user,status):
         group = ChatGroup.objects.get(code=self.room_name)
         if status:
             group.online.add(user)
+            print(f"[ {user} added ]")
         else:
             group.online.remove(user)
+            print(f"[ {user} removed ]")
 
     async def disconnect(self, close_code):
         # await self.delGroup()
@@ -92,6 +94,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
                 }
             )
         elif message:
+            print(username,"HI")
             await self.updateDB(message=message,username=username)
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -143,8 +146,10 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 
     async def request_status(self,event):
         username = event['username']
+        request = "true"
         await self.send(text_data=json.dumps({
             'username': username,
+            "request":request
         }))
 
     @database_sync_to_async
@@ -156,7 +161,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
         if del_msg_id!=None:
             # Delete all chat messages
             if del_msg_id == -1:
-                msgs = ChatMessage.objects.filter(group__code = self.room_group_name)
+                msgs = ChatMessage.objects.filter(group__code = self.room_group_name).exclude(type="INFO")
                 msgs.delete()
                 print(f"Messages of {self.room_group_name} deleted successfully")
 
@@ -190,6 +195,7 @@ class AcceptRequest(AsyncWebsocketConsumer):
         tjson = json.loads(text_data)
         result = tjson.get("result")
         code = tjson.get("code")
+
         await self.channel_layer.group_send(
             self.room_group_name,
             {

@@ -26,9 +26,13 @@ def gen(n):
 
 
 @login_required
-def leavegroup(request,room_code):
+def leavegroup(request):
+    room_code = request.GET.get("roomcode")
+    print(room_code)
     group = ChatGroup.objects.get(code=room_code)
     group.members.remove(request.user)
+    msg = ChatMessage(type='INFO',group=group,user=request.user,content=f'{request.user.username} left')
+    msg.save()
     if request.user == group.user:
         if group.members.all().count()!=0:
             group.user = group.members.first()
@@ -37,7 +41,7 @@ def leavegroup(request,room_code):
             group.delete()
             print("Group deleted")
     print(f"{request.user} left {room_code}")
-    return JsonResponse({"status":"200"})
+    return JsonResponse({"status":"200","room_code":room_code})
 
 @login_required
 def autocomplete(request):
@@ -52,10 +56,10 @@ def autocomplete(request):
         #         "label":profile.first_name+" "+profile.last_name,
         #         "value":group.code
         #         })
-        groups = ChatGroup.objects.annotate(c=Count('members')).filter(code__icontains=query)
+        groups = ChatGroup.objects.annotate(c=Count('members')).filter(name__icontains=query)
         for g in groups:
             results.append({
-                "label":g.code,
+                "label":g.name,
                 "value":g.code
             })
         if results==[]:
@@ -70,21 +74,57 @@ def autocomplete(request):
 
 @login_required
 def user_logout(request):
-    logout(request)
-    return redirect('chat:home')
+    try:
+        logout(request)
+        return JsonResponse({"msg":"Logged out"},status=200)
+    except Exception as e:
+        return JsonResponse({"msg":e} , status=500)
+
+def checkLogin(request):
+    if request.user.is_authenticated:
+        return JsonResponse(status=200)
+    else:
+        return JsonResponse(status=400)
+
+from .serializers import MessageSerializer, GroupSerializer
+def getMessages(request):
+    grpcode = request.GET.get("grpcode")
+    msgs = ChatMessage.objects.filter(group__code=grpcode)
+    files = msgs.exclude(file__isnull=True)
+    seri = MessageSerializer(msgs,many=True)
+    seri2 = MessageSerializer(files,many=True)
+    seri3 = list(ChatGroup.objects.get(code=grpcode).members.all().values("username"))
+    seri4 = list(ChatGroup.objects.get(code=grpcode).online.all().values("username"))
+    print(seri4)
+    d = {
+        "msgs":seri.data,
+        "files":seri2.data,
+        "members":seri3,
+        "online":seri4
+    }
+    return JsonResponse(d,safe=False,status=200)
+
+def getgroupdetails(request):
+    grpcode = request.GET.get("grpcode")
+    grp = ChatGroup.objects.get(code=grpcode)
+    details = {"name":grp.name,"code":grp.code,"user":grp.user.username,"members":grp.members.all().count(),"online":grp.online.all().count()}
+    return JsonResponse(details,status=200)
 
 def home(request):
     if request.method == "GET":
         chlist = set()
+        login = False
         if request.user.is_authenticated:
+            login = True
             for i in ChatGroup.objects.filter(user=request.user):
                 chlist.add(i)
             for i in ChatGroup.objects.filter(members__in=[request.user]):
                 chlist.add(i)
         context = {}
         context["chlist"] = list(chlist)
+        context["login"] = login
         print(context)
-        return render(request,"chat/home.html",context)
+        return render(request,"chat/main.html",context)
     else:
         room_code = request.POST.get("code")
         email = request.POST.get("email")
@@ -100,6 +140,22 @@ def home(request):
             return redirect("chat:home")
         else:
             return redirect("chat:room",room_code=room_code)
+
+def userlogin(request):
+    print(request.POST)
+    if request.method == "POST":
+        email = request.POST.get("emaillogin")
+        user = None
+        if email:
+            print(email)
+            try:
+                user = User.objects.get(username=email.split("@")[0])
+            except:
+                user = User(username=email.split("@")[0],email=email,password="ashishMe")
+                user.save()
+            login(request,user)
+            return JsonResponse({"msg":"Successfully Logged In"}, status=200)
+        return JsonResponse({"msg":"Invalid Email"}, status=400)
 
 @login_required
 def download_file(request,msg_id):
@@ -129,16 +185,20 @@ def messageFileUpload(request):
 
 @login_required
 def startChat(request):
-    new = ChatGroup(code=gen(10),user=request.user)
+    room_code = gen(10)
+    new = ChatGroup(code=room_code,name=request.POST.get("groupName"),user=request.user)
     new.save()
     new.members.add(request.user)
     new.save()
+    msg = ChatMessage(type='INFO',group=new,user=request.user,content=f'{request.user.username} created this group')
+    msg.save()
     print("[ Group created. ]")
-    return redirect("chat:room",room_code=new.code)
+    return JsonResponse({"room_code":room_code},status=200)
 
 @login_required
 def checkgroup(request,room_code):
     group = ChatGroup.objects.filter(code=room_code)
+    print(group)
     if group.count()==0:
         print("[ No such meeting found! ]")
         return JsonResponse({"msg":"No such meeting found!","status":"400"})
@@ -165,9 +225,12 @@ def requestaction(request):
         user = User.objects.get(username=username)
         group = ChatGroup.objects.get(code = code)
         action = request.POST.get("action",None)
+        print(username,code,group,action)
         if action=="true":
             group.members.add(user)
-        print(f"[ Action taken {action} ]")
+            msg = ChatMessage(type='INFO',group=group,user=user,content=f'{user.username} joined this group')
+            msg.save()
+        print(f"[ Action taken {action} ]",username,code,action,type(action))
         msg = {}
         msg["type"] =  'request_status'
         msg["result"] = action

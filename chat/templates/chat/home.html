@@ -182,15 +182,15 @@ function report(state) {
     chatSocket = new WebSocket(ws_scheme+'://' +window.location.host +'/ws/request/{{request.user.username}}/');
 
     function leave(val){
-            fetch('/leavegroup/'+val).then(res=>res.json())
-            .then(data=>{
-                if (data.status == "200"){
-                    document.getElementById(val).style.display = "none";
-                }
-                else{
-                    alert("Some error occured. Try again");
-                }
-            });
+        fetch('/leavegroup/'+val).then(res=>res.json())
+        .then(data=>{
+            if (data.status == "200"){
+                document.getElementById(val).style.display = "none";
+            }
+            else{
+                alert("Some error occured. Try again");
+            }
+        });
     }
 
     function check(){

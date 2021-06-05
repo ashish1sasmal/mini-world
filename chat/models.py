@@ -12,12 +12,15 @@ User = get_user_model()
 
 class ChatGroup(models.Model):
     code = models.CharField(max_length=20)
+    name = models.CharField(max_length=30,blank=True,null=True)
     members = models.ManyToManyField(User,related_name="group_members",blank=True)
     online = models.ManyToManyField(User,related_name="group_online",blank=True)
     user = models.ForeignKey(User,related_name="group_user",on_delete=models.CASCADE,blank=True,null=True)
 
     def __str__(self):
         return self.code
+
+Message_Types = (('MSG','MSG'),('INFO','INFO'))
 
 
 class ChatMessage(models.Model):
@@ -27,6 +30,7 @@ class ChatMessage(models.Model):
     group = models.ForeignKey(ChatGroup,on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now=True)
+    type = models.CharField(max_length=20,choices=Message_Types, default='MSG')
 
     def save(self,file=None ,**kwargs):
         if file:

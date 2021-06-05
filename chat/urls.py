@@ -13,5 +13,10 @@ urlpatterns = [
     path('search/', views.autocomplete, name='autocomplete'),
     path('checkgroup/<str:room_code>/',views.checkgroup,name="checkgroup"),
     path('requestaction/',views.requestaction,name="requestaction"),
-    path('leavegroup/<str:room_code>/',views.leavegroup,name="leavegroup"),
+    path('leavegroup/',views.leavegroup,name="leavegroup"),
+
+    path('login/',views.userlogin , name='login'),
+    path('checkLogin/',views.checkLogin, name='checkLogin'),
+    path('getMessages/',views.getMessages, name="getMessages"),
+    path('getgroupdetails/',views.getgroupdetails, name="getgroupdetails"),
 ]
