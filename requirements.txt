@@ -39,3 +39,4 @@ txaio==21.2.1
 urllib3==1.26.4
 whitenoise==5.2.0
 zope.interface==5.4.0
+djangorestframework==3.12.1
