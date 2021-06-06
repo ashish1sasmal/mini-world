@@ -10,11 +10,29 @@ from .models import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from django.http import JsonResponse
+from django.http import JsonResponse ,HttpResponse
 from django.db.models import Count
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+
+from .email import emailSend
+
+from cryptography.fernet import Fernet
+from Miniworld.settings import FERNET_KEY, HOST
+from django.urls import reverse
+
+import re
+email_regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
+
+def encode(id):
+    # print(FERNET_KEY)
+    FK = bytes(FERNET_KEY, 'utf-8')
+    fernet = Fernet(FK)
+    message = str(id)
+    encMessage = fernet.encrypt(message.encode())
+    encMessage = str(encMessage)
+    return encMessage[2:len(encMessage)-1]
 
 def gen(n):
     import string
@@ -23,6 +41,31 @@ def gen(n):
     for i in range(n):
         var2 += random.choice(string.ascii_letters)
     return var2
+
+def invite(request):
+    try:
+        if request.method == "POST":
+            email = request.POST.get("email")
+            code = request.POST.get("invitecode")
+            if (re.search(email_regex, email)) and code!="":
+                encoded = encode(code)
+                print(encoded)
+                print(reverse('chat:invite'))
+                emailSend("Invitation to join room",f"Hello,\nYou are invited to join the room hosted by {request.user.username}.\nRoom Link : {HOST}/acceptInvite/{encoded}",[email,])
+                return JsonResponse({},status=200)
+        return JsonResponse({},status=400)
+    except Exception as e:
+        print(e)
+        return JsonResponse({},status=500)
+
+def acceptInvite(request,code):
+    # try:
+    #     key = bytes(code, 'utf-8')
+    #     FK = bytes(FERNET_KEY, 'utf-8')
+    #     fernet = Fernet(FK)
+    #     code = fernet.decrypt(key).decode()
+    #     grp = ChatGroup.objects.get(code=code)
+    return HttpResponse("<h3>Under development</h3>")
 
 
 @login_required
@@ -141,21 +184,27 @@ def home(request):
         else:
             return redirect("chat:room",room_code=room_code)
 
+
+
 def userlogin(request):
     print(request.POST)
-    if request.method == "POST":
-        email = request.POST.get("emaillogin")
-        user = None
-        if email:
-            print(email)
-            try:
-                user = User.objects.get(username=email.split("@")[0])
-            except:
-                user = User(username=email.split("@")[0],email=email,password="ashishMe")
-                user.save()
-            login(request,user)
-            return JsonResponse({"msg":"Successfully Logged In"}, status=200)
-        return JsonResponse({"msg":"Invalid Email"}, status=400)
+    try:
+        if request.method == "POST":
+            email = request.POST.get("emaillogin")
+            user = None
+            if (re.search(email_regex, email)):
+                print(email)
+                try:
+                    user = User.objects.get(username=email.split("@")[0])
+                except:
+                    user = User(username=email.split("@")[0],email=email,password="ashishMe")
+                    user.save()
+                login(request,user)
+                return JsonResponse({"msg":"Successfully Logged In"}, status=200)
+            return JsonResponse({"msg":"Invalid Email"}, status=400)
+    except Exception as e:
+        print(e)
+        return JsonResponse({},status=400)
 
 @login_required
 def download_file(request,msg_id):
@@ -185,15 +234,19 @@ def messageFileUpload(request):
 
 @login_required
 def startChat(request):
-    room_code = gen(10)
-    new = ChatGroup(code=room_code,name=request.POST.get("groupName"),user=request.user)
-    new.save()
-    new.members.add(request.user)
-    new.save()
-    msg = ChatMessage(type='INFO',group=new,user=request.user,content=f'{request.user.username} created this group')
-    msg.save()
-    print("[ Group created. ]")
-    return JsonResponse({"room_code":room_code},status=200)
+    try:
+        room_code = gen(10)
+        new = ChatGroup(code=room_code,name=request.POST.get("groupName"),user=request.user)
+        new.save()
+        new.members.add(request.user)
+        new.save()
+        msg = ChatMessage(type='INFO',group=new,user=request.user,content=f'{request.user.username} created this group')
+        msg.save()
+        print("[ Group created. ]")
+        return JsonResponse({"room_code":room_code,"status":200},status=200)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"status":400},status=400)
 
 @login_required
 def checkgroup(request,room_code):

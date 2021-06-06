@@ -19,4 +19,6 @@ urlpatterns = [
     path('checkLogin/',views.checkLogin, name='checkLogin'),
     path('getMessages/',views.getMessages, name="getMessages"),
     path('getgroupdetails/',views.getgroupdetails, name="getgroupdetails"),
+    path('invite/', views.invite, name="invite"),
+    path('acceptInvite/<str:code>',views.acceptInvite,name="acceptInvite"),
 ]

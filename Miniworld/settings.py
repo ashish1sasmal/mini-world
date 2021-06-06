@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("MINI_WORLD_SECRET_KEY")
-
+FERNET_KEY = os.environ.get("MINI_WORLD_FERNET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'chat'
+    'chat',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,12 @@ django_heroku.settings(locals())
 
 LOGIN_REDIRECT_URL='chat:home'
 LOGIN_URL='chat:home'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("EMAIL_ID")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASS")
+
+HOST = os.environ.get("HOST")
