@@ -5,6 +5,7 @@ app_name = "chat"
 
 urlpatterns = [
     path('',views.home,name="home"),
+    path('home/',views.main,name="main"),
     path('chat/<str:room_code>/',views.chat,name="room"),
     path('newmeet/',views.startChat,name="newchat"),
     path('upload/',views.messageFileUpload , name='uploadmsg'),

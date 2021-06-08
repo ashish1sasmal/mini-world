@@ -42,6 +42,7 @@ def gen(n):
         var2 += random.choice(string.ascii_letters)
     return var2
 
+@login_required
 def invite(request):
     try:
         if request.method == "POST":
@@ -130,23 +131,33 @@ def checkLogin(request):
         return JsonResponse(status=400)
 
 from .serializers import MessageSerializer, GroupSerializer
+@login_required
 def getMessages(request):
-    grpcode = request.GET.get("grpcode")
-    msgs = ChatMessage.objects.filter(group__code=grpcode)
-    files = msgs.exclude(file__isnull=True)
-    seri = MessageSerializer(msgs,many=True)
-    seri2 = MessageSerializer(files,many=True)
-    seri3 = list(ChatGroup.objects.get(code=grpcode).members.all().values("username"))
-    seri4 = list(ChatGroup.objects.get(code=grpcode).online.all().values("username"))
-    print(seri4)
-    d = {
-        "msgs":seri.data,
-        "files":seri2.data,
-        "members":seri3,
-        "online":seri4
-    }
-    return JsonResponse(d,safe=False,status=200)
+    try:
+        grpcode = request.GET.get("grpcode")
+        group = ChatGroup.objects.get(code=grpcode)
+        msgs = ChatMessage.objects.filter(group = group)
+        # print()
+        if request.user not in group.members.all():
+            raise Exception
+        files = msgs.exclude(file__isnull=True)
+        seri = MessageSerializer(msgs,many=True)
+        seri2 = MessageSerializer(files,many=True)
+        seri3 = list(ChatGroup.objects.get(code=grpcode).members.all().values("username"))
+        seri4 = list(ChatGroup.objects.get(code=grpcode).online.all().values("username"))
+        d = {
+            "msgs":seri.data,
+            "files":seri2.data,
+            "members":seri3,
+            "online":seri4,
+            "status":200
+        }
+        return JsonResponse(d,safe=False,status=200)
+    except Exception as e:
+        return JsonResponse({"status":400},safe=False,status=400)
 
+
+@login_required
 def getgroupdetails(request):
     grpcode = request.GET.get("grpcode")
     grp = ChatGroup.objects.get(code=grpcode)
@@ -154,37 +165,24 @@ def getgroupdetails(request):
     return JsonResponse(details,status=200)
 
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('chat:main')
+    else:
+        return render(request,"chat/home2.html")
+
+
+def main(request):
     if request.method == "GET":
         chlist = set()
         login = False
-        if request.user.is_authenticated:
-            login = True
-            for i in ChatGroup.objects.filter(user=request.user):
-                chlist.add(i)
-            for i in ChatGroup.objects.filter(members__in=[request.user]):
-                chlist.add(i)
+        for i in ChatGroup.objects.filter(user=request.user):
+            chlist.add(i)
+        for i in ChatGroup.objects.filter(members__in=[request.user]):
+            chlist.add(i)
         context = {}
         context["chlist"] = list(chlist)
-        context["login"] = login
         print(context)
         return render(request,"chat/main.html",context)
-    else:
-        room_code = request.POST.get("code")
-        email = request.POST.get("email")
-        user = None
-        if email:
-            try:
-                user = User.objects.get(username=email.split("@")[0])
-            except:
-                user = User(username=email.split("@")[0],email=email,password="ashishMe")
-                user.save()
-            login(request,user)
-            print(user,"Logged in")
-            return redirect("chat:home")
-        else:
-            return redirect("chat:room",room_code=room_code)
-
-
 
 def userlogin(request):
     print(request.POST)
