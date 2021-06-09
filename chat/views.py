@@ -179,7 +179,15 @@ def main(request):
             chlist.add(i)
         for i in ChatGroup.objects.filter(members__in=[request.user]):
             chlist.add(i)
+
         context = {}
+        context["ischat"] = False
+        if request.GET.get("code",None):
+            room_code = request.GET.get("code",None)
+            context["ischat"] = True
+            group = ChatGroup.objects.get(code=room_code)
+            context["code"] = group.code
+            context["name"] = group.name
         context["chlist"] = list(chlist)
         print(context)
         return render(request,"chat/main.html",context)
@@ -299,18 +307,4 @@ def chat(request,room_code=None):
         return redirect("chat:home")
     else:
         group = group.first()
-    username = None
-    context = {}
-    if request.user.is_authenticated:
-        username = request.user.username
-    else:
-        username = gen(5)
-
-    group.members.add(request.user)
-    messages = ChatMessage.objects.filter(group=group).order_by("created_on")
-    context["username"] = username
-    context["room_code"] = room_code
-    context["group"] = group
-    context["cmessages"] = messages
-    print(context)
-    return render(request,"chat/chatroom.html",context)
+    return redirect(reverse('chat:main')+f"?code={room_code}&name={group.name}")

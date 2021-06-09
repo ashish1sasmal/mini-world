@@ -14,6 +14,7 @@
 
     <title>Mini World</title>
     <link rel="stylesheet" href="{% static 'chat/css/main.css' %}">
+
   </head>
   <body>
 
@@ -111,7 +112,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="verifyMember();">Enter</button>
+            <button type="button" class="btn btn-primary" onclick="enterGroup();">Enter</button>
           </div>
         </div>
         </div>
@@ -182,7 +183,7 @@
                         {% for chat in chlist %}
 
                             <li style="overflow: hidden;" class="mt-2"  id="{{chat.code}}">
-                                <a href="#" onclick="startChat('{{chat.code}}','{{chat.name}}');"  style="float: left;">{{chat.name}}</a>
+                                <a href="#{{chat.code}}" onclick="startChat('{{chat.code}}','{{chat.name}}');"  style="float: left;">{{chat.name}}</a>
                                 <a style="float: right;" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
                                 <ul class="dropdown-menu">
                                      <li><a class="dropdown-item" onclick="leavegroup('{{chat.code}}');" href="#"><i class="fas fa-arrow-left" style="margin-right:10px;"></i> Leave Room</a></li>
@@ -218,9 +219,12 @@
                     <button class="nav-link" id="pills-members-tab" data-bs-toggle="pill" data-bs-target="#pills-members" type="button" role="tab" aria-controls="pills-members" aria-selected="false">Members</button>
                   </li>
                   <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-online-tab" data-bs-toggle="pill" data-bs-target="#pills-online" type="button" role="tab" aria-controls="pills-online" aria-selected="false">online</button>
+                    <button class="nav-link" id="pills-online-tab" data-bs-toggle="pill" data-bs-target="#pills-online" type="button" role="tab" aria-controls="pills-online" aria-selected="false">Online</button>
                   </li>
-                  <li style="margin-left:550px;margin-top:10px;">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-info-tab" data-bs-toggle="pill" data-bs-target="#pills-info" type="button" role="tab" aria-controls="pills-info" aria-selected="false">Info</button>
+                  </li>
+                  <li style="margin-left:500px;margin-top:10px;">
                     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" ><i class="fas fa-cog"></i></a>
 
                     <ul class="dropdown-menu">
@@ -248,6 +252,21 @@
         			</div>
 
         		     </div>
+             <div class="tab-pane fade" id="pills-info" role="tabpanel" aria-labelledby="pills-info-tab">
+                 <div class="" align="center">
+                     <h3><u>Meeting Details</u></h3>
+                     <h4><strong>Code : </strong><span id="room_code_info"></span></h4>
+
+                     <br>
+                     <div id="example" align="center"></div>
+
+                     <p>Scan the code above</p>
+                     <h3>OR</h3>
+                     <p>Use meeting link</p>
+                     <a href="" id="room_link" target="_blank"></a>
+                 </div>
+
+            </div>
                   <div class="tab-pane fade" id="pills-files" role="tabpanel" aria-labelledby="pills-files-tab">
 
                   <table class="table">
@@ -309,12 +328,19 @@
         </div>
   <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
 
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous">
+</script>
+
+
   {{ user.username|json_script:"user_username" }}
 
 
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+    <script src="{% static 'chat/js/jquery.qrcode.min.js' %}"></script>
 
   <script type="text/javascript">
     const csrf_token = '{{ csrf_token }}';
@@ -329,6 +355,10 @@
 
     var chatSocket=null;
     var room_code = null;
+
+
+
+
     var toast_btn =
     `<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="margin-left:50px;margin-bottpm:20px;"></button>`
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
@@ -359,7 +389,6 @@
 
         }
     }
-
 
     function show_danger_toast(msg){
         document.getElementById('danger_toast_msg').innerHTML = msg+` <i class="fas fa-exclamation-triangle"></i>` ;
@@ -403,7 +432,17 @@
             document.getElementById("landing").style.display = "none";
             document.getElementById("convo").style.display = "block";
             document.getElementById("groupName2").textContent = " "+groupName;
+
+            $('#example').qrcode({
+              text: 'https://' +window.location.host +'/chat/'+roomCode,
+              width: 100,
+              height: 100,
+            });
             var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+            document.getElementById('room_code_info').textContent = roomCode;
+            document.getElementById("room_link").textContent = 'https://' +window.location.host +'/chat/'+roomCode;
+            document.getElementById("room_link").href = window.location.host +'/chat/'+roomCode;
+
             chatSocket = new WebSocket(ws_scheme+'://' +window.location.host +'/ws/chat/' +roomCode +'/');
             fetch("{% url 'chat:getMessages' %}?grpcode="+roomCode).then(res=>res.json())
             .then(data=>{
@@ -704,7 +743,11 @@
         }
     }
 
-
+    {% if ischat %}
+        document.getElementById("mysearchid").value = "{{code}}";
+        document.getElementById('inputcode').value = "{{name}}";
+        searchGroup();
+    {% endif %}
 
     function delMessage(val){
         if (chatSocket){
@@ -824,11 +867,16 @@
 
     }
 
-    function verifyMember(){
-
-        document.getElementById("cover-spin").style.display = "block";
+    function enterGroup(){
         val = document.getElementById("mysearchid").value;
         grpName = document.getElementById('inputcode').value;
+        verifyMember(val,grpName);
+    }
+
+    function verifyMember(val, grpName){
+
+        document.getElementById("cover-spin").style.display = "block";
+
         fetch('/checkgroup/'+val).then(res=>res.json()).then(data=>{
             if (data.status == "200"){
                 startChat(val,grpName);
