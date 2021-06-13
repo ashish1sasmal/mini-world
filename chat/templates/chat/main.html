@@ -14,7 +14,12 @@
 
     <title>Mini World</title>
     <link rel="stylesheet" href="{% static 'chat/css/main.css' %}">
-
+    <style media="screen">
+    .dark-mode {
+    background-color: black;
+    color: white;
+    }
+    </style>
   </head>
   <body>
 
@@ -52,6 +57,13 @@
               <li><a class="dropdown-item" href="#" onclick="logout();">Logout</a></li>
             </ul>
           </li>
+
+          <!-- <li class="nav-item"  >
+                <a class="nav-link" href="#" role="button" onclick="myFunction();" >
+              <span class="dot"></span> dark
+            </a>
+
+          </li> -->
 
         </ul>
     </div>
@@ -357,7 +369,11 @@
     var room_code = null;
 
 
-
+    function myFunction() {
+       var element = document.body;
+       element.classList.toggle("dark-mode");
+       document.getElementById("convo").classList.toggle("dark-mode");
+    }
 
     var toast_btn =
     `<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="margin-left:50px;margin-bottpm:20px;"></button>`
