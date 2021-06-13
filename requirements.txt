@@ -36,7 +36,7 @@ six==1.15.0
 sqlparse==0.4.1
 Twisted==21.2.0
 txaio==21.2.1
-urllib3==1.26.4
+urllib3==1.26.5
 whitenoise==5.2.0
 zope.interface==5.4.0
 djangorestframework==3.12.1
