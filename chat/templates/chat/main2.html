@@ -4,10 +4,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="keywords" content="htmlcss bootstrap aside menu, vertical, sidebar nav menu CSS examples" />
-<meta name="description" content="Bootstrap 5 sidebar navigation menu example" />
-
 <title>Mini World</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -15,6 +13,11 @@
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Varela+Round&display=swap" rel="stylesheet">
+
+
 <link rel="stylesheet" href="{% static 'chat/css/main.css' %}">
 <style type="text/css">
 
@@ -35,6 +38,8 @@
 .navbar-nav {
 	margin-left: auto;
 }
+
+
 </style>
 
 
@@ -44,9 +49,9 @@
 
 
 <div class="container">
-	<nav class="navbar navbar-expand-lg" style="border-radius:10px;background-color:#1c2138;border-style: solid;border-color:#ffec3d;">
+	<nav class="navbar navbar-expand-lg" style="border-radius:10px;background-color:#1c2138;border-style: solid;border-color:#ffec3d;font-family: 'Raleway', sans-serif;">
 	<div class="container-fluid">
-	<a class="navbar-brand" href="" style="margin-left:60px"><img src="https://cdn.icon-icons.com/icons2/806/PNG/512/chat-26_icon-icons.com_65943.png" alt="" style="width:40px;color:#2394eb;"> Mini World</a>
+	<a class="navbar-brand" href="" style="margin-left:60px;font-size:30px;"><img src="https://cdn.icon-icons.com/icons2/806/PNG/512/chat-26_icon-icons.com_65943.png" alt="" style="width:40px;color:#2394eb;"> Mini World</a>
 	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation" >
 	<h2><i class="fas fa-bolt" style="color:white;"></i></h2>
 
@@ -55,7 +60,7 @@
 
 	<ul class="navbar-nav ml-auto">
 		<li class="nav-item dropdown mr-2" id="active_link" >
-			  <a class="nav-link dropdown-toggle" style="color:#63ff33;" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
+			  <a class="nav-link dropdown-toggle" style="color:#63ff33;font-size:20px;" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
 			<i class="fas fa-plus" disabled></i> Add
 		  </a>
 		  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -65,7 +70,7 @@
 		  </ul>
 		</li>
 	  <li class="nav-item dropdown mr-2" id="active_link" >
-			<a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#27e6e2;">
+			<a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#27e6e2;font-size:20px;">
 		  <span class="dot"></span> Active
 		</a>
 		<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -158,6 +163,27 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="instModal" tabindex="-1" aria-labelledby="instModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="instModalLabel">Instructions</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		  </div>
+		  <div class="modal-body" >
+			  <ul>
+			  	<li>Create new room using <b> +Add > Start Chat </b> in navbar.</li>
+				<li>Find rooms by entering room name in search field in navbar.</li>
+				<li>Your chat rooms are available in <b>sidebar > My Chat</b> box </li>
+			  </ul>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		  </div>
+		</div>
+		</div>
+	</div>
+
 		<div class="modal fade" id="createRoomModal" tabindex="-1" aria-labelledby="createRoomModal" aria-hidden="true">
 		  <div class="modal-dialog  modal-dialog-centered">
 			<div class="modal-content">
@@ -186,7 +212,7 @@
 <div class="row">
 	<aside class="col-lg-3">
 <!-- ============= COMPONENT ============== -->
-<nav class="sidebar card py-2 mb-4 p-4" style="height:650px;border-radius:10px;background-color:#1c2138;border-style: solid;border-color:#ffec3d;" >
+<nav class="sidebar card py-2 mb-4 p-4" style="height:650px;border-radius:10px;background-color:#1c2138;border-style: solid;border-color:#ffec3d;font-family: 'Varela Round', sans-serif;" >
 <div class="" style="border: 2px solid #bab5b5;padding: 5px;border-radius: 25px;" >
     <h4 align="center" style="color:white;" class="border-bottom">My Chats</h4>
     <ul class="nav flex-column" id="chatlist" >
@@ -355,23 +381,24 @@
 </section>
 
 </div><!-- container //  -->
+<script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-
-
-
-
-  {{ user.username|json_script:"user_username" }}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+	  integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+	  crossorigin="anonymous">
+</script>
 
 
-  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{{ user.username|json_script:"user_username" }}
 
-    <script src="{% static 'chat/js/jquery.qrcode.min.js' %}"></script>
+
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <script src="{% static 'chat/js/jquery.qrcode.min.js' %}"></script>
 
   <script type="text/javascript">
+
     const csrf_token = '{{ csrf_token }}';
     const user_username = JSON.parse(document.getElementById('user_username').textContent);
     // const getFormJSON = (form) => {
@@ -384,6 +411,9 @@
 
     var chatSocket=null;
     var room_code = null;
+	window.onload = function() {
+  $('#instModal').modal('show');
+};
 
 	function play() {
 	  var audio = new Audio('https://fsb.zobj.net/download/b-2Zm5rq55wKFJGjC-Rbqu5mgoyjS5LllDNDILAwKcmkq0XdzzUnx1j1MWEFKtsEOzsviSb6wvexZ42e3FAI5fqWFUMHQIkZeNDkyWhMTqKgZM_yxPlehPZYvZwA/?a=&c=72&f=notification.mp3');
@@ -397,7 +427,7 @@
     }
 
     var toast_btn =
-    `<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="margin-left:50px;margin-bottpm:20px;"></button>`
+    `<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>`
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
     if (user_username!=''){
         userSocket = new WebSocket(ws_scheme+'://' +window.location.host +'/ws/request/{{user.username}}/');
@@ -423,23 +453,23 @@
     }
 
     function show_danger_toast(msg){
-        document.getElementById('danger_toast_msg').innerHTML = msg+` <i class="fas fa-exclamation-triangle"></i>` ;
+        document.getElementById('danger_toast_msg').innerHTML = msg+` <i class="fas fa-exclamation-triangle"></i>`  + toast_btn;
         $('#danger_toast').toast('show');
     }
 
     function show_primary_toast(msg){
-        document.getElementById('primary_toast_msg').innerHTML = msg+` <i class="fas fa-check-circle"></i>`;
+        document.getElementById('primary_toast_msg').innerHTML = msg+` <i class="fas fa-check-circle"></i>` + toast_btn;
         $('#primary_toast').toast('show');
     }
 
     function show_warning_toast(msg){
         document.getElementById('warning_toast_msg').innerHTML = msg;
-        $('#warning_toast').toast('show');
+        $('#warning_toast').toast('show') + toast_btn;
     }
 
     function show_success_toast(msg){
         document.getElementById('success_toast_msg').innerHTML = msg;
-        $('#success_toast').toast('show');
+        $('#success_toast').toast('show') + toast_btn;
     }
 
     function stopChat(){
@@ -971,7 +1001,7 @@
 
                  document.getElementById("chatlist").innerHTML=
                  `<li class="nav-item border-bottom" align="center" id="${data.room_code}">
-	         		<a class="nav-link" onclick="startChat('${data.room_code}','${groupName}');" href="#"># ${groupName} </a>
+	         		<a class="nav-link" onclick="startChat('${data.room_code}','${groupName}');" href="#" style="color:white;"># ${groupName} </a>
 	         	</li>
                  `+ document.getElementById("chatlist").innerHTML;
                  // show_primary_toast("Group created successfully.");
@@ -1015,8 +1045,10 @@
        }
 });
 
+
 // $( "#inputcode" ).autocomplete( "option", "appendTo", "#searchform" );
 
   </script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 </body>
 </html>
