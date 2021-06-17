@@ -5,7 +5,7 @@ from .models import *
 from django.contrib.auth.models import User
 
 from channels.db import database_sync_to_async
-
+import time
 #
 
 class ChatRoomConsumer(AsyncWebsocketConsumer):
@@ -19,10 +19,11 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
         )
 
         await self.accept()
-
+        time.sleep(1)
         user = self.scope['user']
         if user.is_authenticated:
             await self.updateUser(user,True)
+
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
@@ -31,6 +32,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
                     'username': user.username,
                 }
             )
+            print("After add")
 
 
     @database_sync_to_async

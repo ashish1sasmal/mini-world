@@ -190,7 +190,7 @@ def main(request):
             context["name"] = group.name
         context["chlist"] = list(chlist)
         print(context)
-        return render(request,"chat/main.html",context)
+        return render(request,"chat/main2.html",context)
 
 def userlogin(request):
     print(request.POST)

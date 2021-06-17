@@ -15,330 +15,310 @@
     <title>Mini World</title>
     <link rel="stylesheet" href="{% static 'chat/css/main.css' %}">
     <style media="screen">
-    .dark-mode {
-    background-color: black;
-    color: white;
-    }
+        .navbar-nav {
+            margin-left: auto;
+        }
     </style>
   </head>
   <body>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light" style="border-bottom:1px solid #c1c5c9;">
-      <div class="container-fluid">
-          <div class="col-3">
-              <a class="navbar-brand" href="" style="margin-left:60px"><img src="https://cdn.icon-icons.com/icons2/806/PNG/512/chat-26_icon-icons.com_65943.png" alt="" style="width:50px;"> Mini World</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-          </div>
+      <div class="container">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+         <div class="container-fluid">
+         <a class="navbar-brand" href="" style="margin-left:60px"><img src="https://cdn.icon-icons.com/icons2/806/PNG/512/chat-26_icon-icons.com_65943.png" alt="" style="width:40px;"> Mini World</a>
+         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+         <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
 
-<div class="collapse navbar-collapse col-9" id="navbarNavDropdown">
-    <div class="col-6">
-        <form class="d-flex" >
+         <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown mr-2" id="active_link" >
+                  <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
+                <span class="dot"></span> Active
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" onclick="logout();">Logout</a></li>
+              </ul>
+            </li>
+         </ul>
+         <form class="d-flex">
             <input type="hidden" name="mysearchid" value="" id="mysearchid">
             <input class="form-control me-2" type="search" name="mysearch" id="inputcode" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="button" onclick="searchGroup();">Search</button>
-          </form>
-    </div>
-    <div class="col-2">
-
-    </div>
-    <div class="col-3">
-        <ul class="navbar-nav" >
-
-          <li class="nav-item dropdown" id="active_link" >
-                <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
-              <span class="dot"></span> Active
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#" onclick="logout();">Logout</a></li>
-            </ul>
-          </li>
-
-
-          <!-- <li class="nav-item"  >
-                <a class="nav-link" href="#" role="button" onclick="myFunction();" >
-              <span class="dot"></span> dark
-            </a>
-
-          </li> -->
-
-        </ul>
-    </div>
-
-</div>
-</div>
-
-    </nav>
-
-
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 5">
-  <div id="primary_toast" class="toast hide text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-body" id="primary_toast_msg">
-
-    </div>
-
-  </div>
-</div>
-
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 5">
-<div id="success_toast" class="toast hide text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-<div class="toast-body" id="success_toast_msg">
-
-</div>
-
-</div>
-</div>
-
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 5">
-<div id="danger_toast" class="toast hide text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-<div class="toast-body" id="danger_toast_msg">
-
-</div>
-
-</div>
-</div>
-
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 5">
-<div id="warning_toast" class="toast hide text-white bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
-<div class="toast-body" id="warning_toast_msg">
-
-</div>
-
-</div>
-</div>
-
-
-    <div id="cover-spin"><h2 align="center" class="mt-5"><b>Please Wait...</b></h2></div>
-    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="searchModalLabel">Enter Room</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body" id="searchModalbody">
+         </form>
+         </div>
+         </div>
+          </nav>
+          <div class="position-fixed top-0 end-0 p-3" style="z-index: 5">
+        <div id="primary_toast" class="toast hide text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-body" id="primary_toast_msg">
 
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="enterGroup();">Enter</button>
-          </div>
+
         </div>
-        </div>
-    </div>
+      </div>
 
-    <div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="inviteModalLabel">Enter Email Id</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body" id="inviteModalbody">
-              <input class="form-control" type="email" id="inviteemail" name="" value="">
-              <input type="hidden" id="invitecode" name="invitecode" value="">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="invite();">Invite</button>
-          </div>
-        </div>
-        </div>
-    </div>
+      <div class="position-fixed top-0 end-0 p-3" style="z-index: 5">
+      <div id="success_toast" class="toast hide text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-body" id="success_toast_msg">
 
-        <div class="modal fade" id="createRoomModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog  modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Create Room</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      </div>
+      </div>
+
+      <div class="position-fixed top-0 end-0 p-3" style="z-index: 5">
+      <div id="danger_toast" class="toast hide text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-body" id="danger_toast_msg">
+
+      </div>
+
+      </div>
+      </div>
+
+      <div class="position-fixed top-0 end-0 p-3" style="z-index: 5">
+      <div id="warning_toast" class="toast hide text-white bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-body" id="warning_toast_msg">
+
+      </div>
+
+      </div>
+      </div>
+
+
+          <div id="cover-spin"><h2 align="center" class="mt-5"><b>Please Wait...</b></h2></div>
+          <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="searchModalLabel">Enter Room</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="searchModalbody">
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" onclick="enterGroup();">Enter</button>
+                </div>
               </div>
-              <form >
-                  <div class="modal-body">
-                      <div class="mb-3">
-                          <label for="room_name" class="form-label">Room Name</label>
-                          <input type="text" class="form-control" id="groupName" aria-describedby="emailHelp">
-                          <div id="emailHelp" class="form-text">Choose some funky names</div>
-                        </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" onclick="makeGroup();" class="btn btn-primary">Create</button>
-                  </div>
-              </form>
-
-            </div>
+              </div>
           </div>
-        </div>
 
+          <div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="inviteModalLabel">Enter Email Id</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="inviteModalbody">
+                    <input class="form-control" type="email" id="inviteemail" name="" value="">
+                    <input type="hidden" id="invitecode" name="invitecode" value="">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" onclick="invite();">Invite</button>
+                </div>
+              </div>
+              </div>
+          </div>
 
-
-        <div class="row" style="max-height: 500px;margin-left:30px;margin-right:30px;">
-            <div class="col-3 mycontent-left" >
-                <div class="col-12">
-                    <div style="overflow: hidden;" class="mt-2">
-                        <p style="float: left;">My Chats</p>
-
-                        <a style="float: right;color:green;" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-plus" disabled></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#createRoomModal"><i class="far fa-comment-dots" style="margin-right:10px;"></i> Start Chat</a></li>
-                             <li><a class="dropdown-item" href="#"><i class="far fa-keyboard" style="margin-right:10px;"></i>Enter Code</a></li>
-                             <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
+              <div class="modal fade" id="createRoomModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog  modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Create Room</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <hr style="margin-top:-10px;">
+                    <form >
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="room_name" class="form-label">Room Name</label>
+                                <input type="text" class="form-control" id="groupName" aria-describedby="emailHelp">
+                                <div id="emailHelp" class="form-text">Choose some funky names</div>
+                              </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" onclick="makeGroup();" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
 
-                    <ul id="chatlist" style="margin-left:-20px;">
-                        {% for chat in chlist %}
-
-                            <li style="overflow: hidden;" class="mt-2"  id="{{chat.code}}">
-                                <a href="#{{chat.code}}" onclick="startChat('{{chat.code}}','{{chat.name}}');"  style="float: left;">{{chat.name}}</a>
-                                <a style="float: right;" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
-                                <ul class="dropdown-menu">
-                                     <li><a class="dropdown-item" onclick="leavegroup('{{chat.code}}');" href="#"><i class="fas fa-arrow-left" style="margin-right:10px;"></i> Leave Room</a></li>
-                                     <li><a class="dropdown-item" href="#"><i class="fas fa-users" style="margin-right:10px;"></i> Members</a></li>
-                                     <li><a class="dropdown-item" href="#"  onclick="showinvite('{{chat.code}}');"><i class="fas fa-at" style="margin-right:10px;"></i> Invite via email</a></li>
-                                </ul>
-                            </li>
-
-                        {% endfor %}
-                    </ul>
-
-                </div>
-                <div class="col-12">
-                    Waiting Lobby
-                    <hr style="margin-top:0px;">
-                    <ul class="" id="lobby" style="margin-left:-20px;">
-
-                    </ul>
-                </div>
-            </div>
-        <div class="col-9">
-            <div class="YJ" style="margin-top:150px;" id="landing"><div class="ajp" align="center"><svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path fill="#9AA0A6" fill-rule="evenodd" clip-rule="evenodd" d="m9.96667,0.66663l79.73329,0c5.48142,0 9.96642,4.44 9.96642,9.86667l0,59.19999c0,5.4267 -4.485,9.8667 -9.96642,9.8667l-69.76659,0l-19.93336,19.73302l0,-88.7997c0,-5.42667 4.485,-9.86667 9.96667,-9.86667zm0,69.06665l79.73329,0l0,-59.19999l-79.73329,0l0,59.19999z"></path></svg><h4 class="acY">No conversation selected</h4></div></div>
-            <div class="" style="display:none;" id="convo">
-                <ul class="nav nav-pills mt-2" id="pills-tab" role="tablist">
-
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="pills-chat-tab" data-bs-toggle="pill" data-bs-target="#pills-chat" type="button" role="tab" aria-controls="pills-chat" aria-selected="true">Chat</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-files-tab" data-bs-toggle="pill" data-bs-target="#pills-files" type="button" role="tab" aria-controls="pills-files" aria-selected="false">Files</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-members-tab" data-bs-toggle="pill" data-bs-target="#pills-members" type="button" role="tab" aria-controls="pills-members" aria-selected="false">Members</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-online-tab" data-bs-toggle="pill" data-bs-target="#pills-online" type="button" role="tab" aria-controls="pills-online" aria-selected="false">Online</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-info-tab" data-bs-toggle="pill" data-bs-target="#pills-info" type="button" role="tab" aria-controls="pills-info" aria-selected="false">Info</button>
-                  </li>
-                  <li style="margin-left:500px;margin-top:10px;">
-                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" ><i class="fas fa-cog"></i></a>
-
-                    <ul class="dropdown-menu">
-                       <li><a href="#" class="dropdown-item" onclick="delMessage(-1);" ><i class="fas fa-trash" style="margin-right:15px;"></i> Clear Chat</a></li>
-                     </ul>
-                  </li>
-
-                </ul>
-                <hr style="margin-top:5px;">
-                <div class="tab-content" id="pills-tabContent">
-                  <div class="tab-pane fade show active" id="pills-chat" role="tabpanel" aria-labelledby="pills-chat-tab">
-                      <div class="position-relative">
-                          <h5 align="center"><span id="groupName2">Group Name </span></h5>
-                      <div class="chat-messages p-4" id="chat_body">
-
-        				</div>
-        			</div>
-
-        			<div class="flex-grow-0 py-3 px-4 border-top">
-        				<div class="input-group">
-        					<input type="text" class="form-control" id="btn-input" placeholder="Type your message">
-                            <input type="file" name="file" id="myfile"  multiple>
-        					<button class="btn btn-primary" id="btn-chat">Send</button>
-        				</div>
-        			</div>
-
-        		     </div>
-             <div class="tab-pane fade" id="pills-info" role="tabpanel" aria-labelledby="pills-info-tab">
-                 <div class="" align="center">
-                     <h3><u>Meeting Details</u></h3>
-                     <h4><strong>Code : </strong><span id="room_code_info"></span></h4>
-
-                     <br>
-                     <div id="example" align="center"></div>
-
-                     <p>Scan the code above</p>
-                     <h3>OR</h3>
-                     <p>Use meeting link</p>
-                     <a href="" id="room_link" target="_blank"></a>
-                 </div>
-
-            </div>
-                  <div class="tab-pane fade" id="pills-files" role="tabpanel" aria-labelledby="pills-files-tab">
-
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Sender</th>
-                        <th scope="col">File</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody id="fileslist">
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>image.jpg</td>
-                        <td>13 April 2021</td>
-                        <td><a href="#">Download</a></td>
-                      </tr>
-
-                    </tbody>
-                  </table>
-                  </div>
-                  <div class="tab-pane fade" id="pills-members" role="tabpanel" aria-labelledby="pills-members-tab">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody id="memberslist">
-
-
-                        </tbody>
-                      </table>
-                  </div>
-
-                  <div class="tab-pane fade" id="pills-online" role="tabpanel" aria-labelledby="pills-online-tab">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Members</th>
-                            <th scope="col">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody id="onlinelist">
-
-                        </tbody>
-                      </table>
                   </div>
                 </div>
+              </div>
 
-            </div>
 
-        </div>
+
+              <div class="row" style="max-height: 500px;margin-left:30px;margin-right:30px;">
+                  <div class="col-3 mycontent-left" >
+                      <div class="col-12">
+                          <div style="overflow: hidden;" class="mt-2">
+                              <p style="float: left;">My Chats</p>
+
+                              <a style="float: right;color:green;" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-plus" disabled></i></a>
+                              <ul class="dropdown-menu">
+                                  <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#createRoomModal"><i class="far fa-comment-dots" style="margin-right:10px;"></i> Start Chat</a></li>
+                                   <li><a class="dropdown-item" href="#"><i class="far fa-keyboard" style="margin-right:10px;"></i>Enter Code</a></li>
+                                   <li><a class="dropdown-item" href="#">Something else here</a></li>
+                              </ul>
+                          </div>
+                          <hr style="margin-top:-10px;">
+
+                          <ul id="chatlist" style="margin-left:-20px;">
+                              {% for chat in chlist %}
+
+                                  <li style="overflow: hidden;" class="mt-2"  id="{{chat.code}}">
+                                      <a href="#{{chat.code}}" onclick="startChat('{{chat.code}}','{{chat.name}}');"  style="float: left;">{{chat.name}}</a>
+                                      <a style="float: right;" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                                      <ul class="dropdown-menu">
+                                           <li><a class="dropdown-item" onclick="leavegroup('{{chat.code}}');" href="#"><i class="fas fa-arrow-left" style="margin-right:10px;"></i> Leave Room</a></li>
+                                           <li><a class="dropdown-item" href="#"><i class="fas fa-users" style="margin-right:10px;"></i> Members</a></li>
+                                           <li><a class="dropdown-item" href="#"  onclick="showinvite('{{chat.code}}');"><i class="fas fa-at" style="margin-right:10px;"></i> Invite via email</a></li>
+                                      </ul>
+                                  </li>
+
+                              {% endfor %}
+                          </ul>
+
+                      </div>
+                      <div class="col-12">
+                          Waiting Lobby
+                          <hr style="margin-top:0px;">
+                          <ul class="" id="lobby" style="margin-left:-20px;">
+
+                          </ul>
+                      </div>
+                  </div>
+              <div class="col-9">
+                  <div class="YJ" style="margin-top:150px;" id="landing"><div class="ajp" align="center"><svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path fill="#9AA0A6" fill-rule="evenodd" clip-rule="evenodd" d="m9.96667,0.66663l79.73329,0c5.48142,0 9.96642,4.44 9.96642,9.86667l0,59.19999c0,5.4267 -4.485,9.8667 -9.96642,9.8667l-69.76659,0l-19.93336,19.73302l0,-88.7997c0,-5.42667 4.485,-9.86667 9.96667,-9.86667zm0,69.06665l79.73329,0l0,-59.19999l-79.73329,0l0,59.19999z"></path></svg><h4 class="acY">No conversation selected</h4></div></div>
+                  <div class="" style="display:none;" id="convo">
+                      <ul class="nav nav-pills mt-2" id="pills-tab" role="tablist">
+
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link active" id="pills-chat-tab" data-bs-toggle="pill" data-bs-target="#pills-chat" type="button" role="tab" aria-controls="pills-chat" aria-selected="true">Chat</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link" id="pills-files-tab" data-bs-toggle="pill" data-bs-target="#pills-files" type="button" role="tab" aria-controls="pills-files" aria-selected="false">Files</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link" id="pills-members-tab" data-bs-toggle="pill" data-bs-target="#pills-members" type="button" role="tab" aria-controls="pills-members" aria-selected="false">Members</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link" id="pills-online-tab" data-bs-toggle="pill" data-bs-target="#pills-online" type="button" role="tab" aria-controls="pills-online" aria-selected="false">Online</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link" id="pills-info-tab" data-bs-toggle="pill" data-bs-target="#pills-info" type="button" role="tab" aria-controls="pills-info" aria-selected="false">Info</button>
+                        </li>
+                        <li style="margin-left:500px;margin-top:10px;">
+                          <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" ><i class="fas fa-cog"></i></a>
+
+                          <ul class="dropdown-menu">
+                             <li><a href="#" class="dropdown-item" onclick="delMessage(-1);" ><i class="fas fa-trash" style="margin-right:15px;"></i> Clear Chat</a></li>
+                           </ul>
+                        </li>
+
+                      </ul>
+                      <hr style="margin-top:5px;">
+                      <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-chat" role="tabpanel" aria-labelledby="pills-chat-tab">
+                            <div class="position-relative">
+                                <h5 align="center"><span id="groupName2">Group Name </span></h5>
+                            <div class="chat-messages p-4" id="chat_body">
+
+                            </div>
+                        </div>
+
+                        <div class="flex-grow-0 py-3 px-4 border-top">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="btn-input" placeholder="Type your message">
+                                  <input type="file" name="file" id="myfile"  multiple>
+                                <button class="btn btn-primary" id="btn-chat">Send</button>
+                            </div>
+                        </div>
+
+                         </div>
+                   <div class="tab-pane fade" id="pills-info" role="tabpanel" aria-labelledby="pills-info-tab">
+                       <div class="" align="center">
+                           <h3><u>Meeting Details</u></h3>
+                           <h4><strong>Code : </strong><span id="room_code_info"></span></h4>
+
+                           <br>
+                           <div id="example" align="center"></div>
+
+                           <p>Scan the code above</p>
+                           <h3>OR</h3>
+                           <p>Use meeting link</p>
+                           <a href="" id="room_link" target="_blank"></a>
+                       </div>
+
+                  </div>
+                        <div class="tab-pane fade" id="pills-files" role="tabpanel" aria-labelledby="pills-files-tab">
+
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Sender</th>
+                              <th scope="col">File</th>
+                              <th scope="col">Date</th>
+                              <th scope="col">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody id="fileslist">
+                            <tr>
+                              <th scope="row">1</th>
+                              <td>Mark</td>
+                              <td>image.jpg</td>
+                              <td>13 April 2021</td>
+                              <td><a href="#">Download</a></td>
+                            </tr>
+
+                          </tbody>
+                        </table>
+                        </div>
+                        <div class="tab-pane fade" id="pills-members" role="tabpanel" aria-labelledby="pills-members-tab">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th scope="col">#</th>
+                                  <th scope="col">Name</th>
+                                  <th scope="col">Action</th>
+                                </tr>
+                              </thead>
+                              <tbody id="memberslist">
+
+
+                              </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-online" role="tabpanel" aria-labelledby="pills-online-tab">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th scope="col">#</th>
+                                  <th scope="col">Members</th>
+                                  <th scope="col">Action</th>
+                                </tr>
+                              </thead>
+                              <tbody id="onlinelist">
+
+                              </tbody>
+                            </table>
+                        </div>
+                      </div>
+
+                  </div>
+
+              </div>
+      </div>
+
+
   <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
