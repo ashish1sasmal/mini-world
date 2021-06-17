@@ -120,7 +120,7 @@
 	</div>
 
 
-	<div id="cover-spin"><h2 align="center" class="mt-5"><b>Please Wait...</b></h2></div>
+	<div id="cover-spin"><h2 align="center" class="mt-5"><b>Please Wait...<br>While someone accepts your request.</b></h2></div>
 	<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 		<div class="modal-content">
@@ -245,6 +245,7 @@
 							 <ul class="dropdown-menu">
 							   <li><a href="#" class="dropdown-item" onclick="delMessage(-1);" ><i class="fas fa-trash" style="margin-right:15px;"></i> Clear Chat</a></li>
 							    <li><a href="#"  class="dropdown-item" id="groupleave" ><i class="fas fa-arrow-left" style="margin-right:10px;"></i> Leave Group</a></li>
+								<li><a href="#"  class="dropdown-item" id="groupinvite"><i class="fas fa-at" style="margin-right:10px;"></i> Invite Via email</a></li>
 							 </ul>
 					  </li>
 
@@ -384,6 +385,10 @@
     var chatSocket=null;
     var room_code = null;
 
+	function play() {
+	  var audio = new Audio('https://fsb.zobj.net/download/b-2Zm5rq55wKFJGjC-Rbqu5mgoyjS5LllDNDILAwKcmkq0XdzzUnx1j1MWEFKtsEOzsviSb6wvexZ42e3FAI5fqWFUMHQIkZeNDkyWhMTqKgZM_yxPlehPZYvZwA/?a=&c=72&f=notification.mp3');
+	  audio.play();
+	}
 
     function myFunction() {
        var element = document.body;
@@ -473,6 +478,9 @@
             document.getElementById("room_link").href = window.location.host +'/chat/'+roomCode;
 			document.getElementById("groupleave").addEventListener("click", function() {
               	leavegroup(roomCode);
+            });
+			document.getElementById("groupinvite").addEventListener("click", function() {
+              	showinvite(roomCode);
             });
             chatSocket = new WebSocket(ws_scheme+'://' +window.location.host +'/ws/chat/' +roomCode +'/');
             fetch("{% url 'chat:getMessages' %}?grpcode="+roomCode).then(res=>res.json())
@@ -750,6 +758,7 @@
                             }
 
                             else if(data.request){
+								play();
                                 document.getElementById("lobby").innerHTML=
                                 `<li class="nav-item border-bottom" align="center" id="${data.username}_req" >
 
