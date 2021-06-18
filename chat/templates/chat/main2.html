@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="{% static 'chat/css/main.css' %}">
 <style type="text/css">
 
+
 .sidebar li .submenu{
 	list-style: none;
 	margin: 0;
@@ -32,13 +33,15 @@
     font-weight: 500;
     color: var(--bs-dark);
 }
-.sidebar .nav-link:hover {
-    color: var(--bs-primary);
-}
+
+
 .navbar-nav {
 	margin-left: auto;
 }
-
+.nav-item{
+	text-decoration: none;
+	background-color: transparent !important;
+}
 
 </style>
 
@@ -64,7 +67,7 @@
 			<i class="fas fa-info-circle" disabled></i> Info
 		  </a>
 		</li>
-		<li class="nav-item dropdown mr-2" id="active_link" >
+		<li class="nav-item dropdown mr-2" id="active_link" style="">
 			  <a class="nav-link" style="margin-right: 20px;color:#63ff33;font-size:20px;" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
 			<i class="fas fa-plus" disabled></i> Add
 		  </a>
@@ -223,7 +226,7 @@
     <ul class="nav flex-column" id="chatlist" >
         {% for chat in chlist %}
     	<li class="nav-item" align="center" id="{{chat.code}}">
-    		<a class="nav-link" onclick="startChat('{{chat.code}}','{{chat.name}}');" href="#" style="color:white;"># {{chat.name}} </a>
+    		<a class="nav-link" onclick="startChat('{{chat.code}}','{{chat.name}}');" href="#" style="color:white;border-bottom:"># <u>{{chat.name}}</u> </a>
     	</li>
          {% endfor %}
     </ul>
@@ -1008,8 +1011,8 @@
              if (data.status ==200){
 
                  document.getElementById("chatlist").innerHTML=
-                 `<li class="nav-item border-bottom" align="center" id="${data.room_code}">
-	         		<a class="nav-link" onclick="startChat('${data.room_code}','${groupName}');" href="#" style="color:white;"># ${groupName} </a>
+                 `<li class="nav-item" align="center" id="${data.room_code}">
+	         		<a class="nav-link" onclick="startChat('${data.room_code}','${groupName}');" href="#" style="color:white;"># <u>${groupName}</u> </a>
 	         	</li>
                  `+ document.getElementById("chatlist").innerHTML;
                  // show_primary_toast("Group created successfully.");
