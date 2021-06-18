@@ -573,8 +573,8 @@
                                             <img src="https://cdn2.iconfinder.com/data/icons/avatars-99/62/avatar-370-456322-512.png" class="rounded-circle mr-1" alt="${data.msgs[i].username}" width="40" height="40">
                                             <div class="text-muted small text-nowrap mt-2">2:34 am</div>
                                         </div>
-                                        <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
-                                            <div class="font-weight-bold mb-1">${data.msgs[i].username}</div>
+                                        <div class="flex-shrink-1 rounded py-2 px-3 ml-3" style="background-color:#383f61;color:white;margin-left:10px;">
+                                            <div class="font-weight-bold mb-1"><b>${data.msgs[i].username}</b></div>
                                             <small>${data.msgs[i].content}</small>
                                         </div>
                                     </div>
@@ -584,13 +584,13 @@
                                 else{
                                     document.getElementById('chat_body').innerHTML+=
                                     `
-                                    <div class="chat-message-right pb-4" style="max-width:400px;">
+                                    <div class="chat-message-right pb-4" style="max-width:400px;background-color:#1c2138;">
                 						<div>
                 							<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" class="rounded-circle mr-1" alt="${data.msgs[i].id}" width="40" height="40">
                 							<div class="text-muted small text-nowrap mt-2">2:33 am</div>
                 						</div>
-                						<div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                							<div class="font-weight-bold mb-1">You</div>
+                						<div class="flex-shrink-1 rounded py-2 px-3 mr-3" style="background-color:#383f61;color:white;margin-right:10px;">
+                							<div class="font-weight-bold mb-1"><b>You</b></div>
                 							<small>${data.msgs[i].content}</small>
                 						</div>
                 					</div>
@@ -666,13 +666,15 @@
                                  }));
                                  messageInputDom.value = '';
                              }
+							 $("#chat_body").scrollTop($("#chat_body")[0].scrollHeight);
                         };
+
                         chatSocket.onmessage = function (e) {
                             const data = JSON.parse(e.data);
                             console.log(data);
                             // document.querySelector('#chat-text').value += (data.username + ': ' + data.message + '\n');
                             if (data.message){
-								scrollTo();
+
                                 if (data.type == 'INFO'){
                                     document.getElementById('chat_body').innerHTML+=
                                     `
@@ -689,7 +691,7 @@
                                             <img src="https://cdn2.iconfinder.com/data/icons/avatars-99/62/avatar-370-456322-512.png" class="rounded-circle mr-1" alt="${data.username}" width="40" height="40">
                                             <div class="text-muted small text-nowrap mt-2">2:34 am</div>
                                         </div>
-                                        <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+                                        <div class="flex-shrink-1 rounded py-2 px-3 ml-3" style="background-color:#383f61;color:white;margin-left:10px;">
                                             <div class="font-weight-bold mb-1">${data.username}</div>
                                             <small>${data.message}</small>
                                         </div>
@@ -704,7 +706,7 @@
                                             <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" class="rounded-circle mr-1" alt="${data.username}" width="40" height="40">
                                             <div class="text-muted small text-nowrap mt-2">2:33 am</div>
                                         </div>
-                                        <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                                        <div class="flex-shrink-1 rounded py-2 px-3 mr-3" style="background-color:#383f61;color:white;margin-right:10px;">
                                             <div class="font-weight-bold mb-1">You</div>
                                             <small>${data.message}</small>
                                         </div>
@@ -798,12 +800,13 @@
                                 `<li class="nav-item border-bottom" align="center" id="${data.username}_req" >
 
 					        		<a class="nav-link" href="#" style="display: inline;color:white;"># ${data.username} </a>
-									<a style="float:right;color:red;display: inline;margin-left:5px;" href="#" onclick="reqaction('${data.username}',false)"> <i class="fas fa-times" style="font-size:22px; margin-right:10px;"></i> Cancel</a>
+									<a style="float:right;color:red;display: inline;margin-left:5px;" href="#" onclick="reqaction('${data.username}',false)"> <i class="fas fa-times" style="font-size:15px; margin-right:5px;"></i> Cancel</a>
 									<a style="float:right;color:green;display: inline;" href="#" onclick="reqaction('${data.username}',true)"><i class="fas fa-check" style="font-size:20px;margin-left:15px;"></i> Allow</a>
 
 					        	</li>
                                 `+ document.getElementById("lobby").innerHTML;
                             }
+							scrollTo();
                             };
                     }
                     else{
