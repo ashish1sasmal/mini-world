@@ -556,7 +556,7 @@
                 							<div class="text-muted small text-nowrap mt-2">2:33 am</div>
                 						</div>
                 						<div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                							<div class="font-weight-bold mb-1">You</div>
+                							<div class="font-weight-bold mb-1"><b>You</b></div>
                 							<a href="http://${window.location.host}/downloadfile/${data.msgs[i].id}"  target="_blank"><i class="fas fa-file-download"></i></a>  ${data.msgs[i].file}
                 						</div>
                 					</div>
@@ -692,7 +692,7 @@
                                             <div class="text-muted small text-nowrap mt-2">2:34 am</div>
                                         </div>
                                         <div class="flex-shrink-1 rounded py-2 px-3 ml-3" style="background-color:#383f61;color:white;margin-left:10px;">
-                                            <div class="font-weight-bold mb-1">${data.username}</div>
+                                            <div class="font-weight-bold mb-1"><b>${data.username}</b></div>
                                             <small>${data.message}</small>
                                         </div>
                                     </div>
@@ -707,7 +707,7 @@
                                             <div class="text-muted small text-nowrap mt-2">2:33 am</div>
                                         </div>
                                         <div class="flex-shrink-1 rounded py-2 px-3 mr-3" style="background-color:#383f61;color:white;margin-right:10px;">
-                                            <div class="font-weight-bold mb-1">You</div>
+                                            <div class="font-weight-bold mb-1"><b>You</b></div>
                                             <small>${data.message}</small>
                                         </div>
                                     </div>
@@ -722,7 +722,7 @@
                                     `
                                     <tr>
                                       <th scope="row">${i+1}</th>
-                                      <td>${data.username}</td>
+                                      <td><b>${data.username}</b></td>
                                       <td>${data.file_names[i]}</td>
                                       <td>Today</td>
                                       <td><a href="http://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i> Download</a></td>
@@ -738,7 +738,7 @@
                                                <div class="text-muted small text-nowrap mt-2">2:34 am</div>
                                            </div>
                                            <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
-                                               <div class="font-weight-bold mb-1">${data.username}</div>
+                                               <div class="font-weight-bold mb-1"><b>${data.username}</b></div>
                                                <a href="http://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i></a> ${data.file_names[i]}
                                            </div>
                                        </div>
@@ -753,7 +753,7 @@
                     							<div class="text-muted small text-nowrap mt-2">2:33 am</div>
                     						</div>
                     						<div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                    							<div class="font-weight-bold mb-1">You</div>
+                    							<div class="font-weight-bold mb-1"><b>You</b></div>
                     							<a href="http://${window.location.host}/downloadfile/${data.file_ids[i]}"  target="_blank"><i class="fas fa-file-download"></i></a>  ${data.file_names[i]}
                     						</div>
                     					</div>
@@ -782,7 +782,7 @@
                                         `
                                         <tr id="${data.username}">
                                           <th scope="row"><i class="fas fa-arrow-right"></i></th>
-                                          <td>${data.username}</td>
+                                          <td><b>${data.username}</b></td>
                                           <td><a href="#">Start Chat</a></td>
                                         </tr>
                                         `
@@ -799,7 +799,7 @@
                                 document.getElementById("lobby").innerHTML=
                                 `<li class="nav-item border-bottom" align="center" id="${data.username}_req" >
 
-					        		<a class="nav-link" href="#" style="display: inline;color:white;"># ${data.username} </a>
+					        		<a class="nav-link" href="#" style="display: inline;color:white;"># <b>${data.username}</b> </a>
 									<a style="float:right;color:red;display: inline;margin-left:5px;" href="#" onclick="reqaction('${data.username}',false)"> <i class="fas fa-times" style="font-size:15px; margin-right:5px;"></i> Cancel</a>
 									<a style="float:right;color:green;display: inline;" href="#" onclick="reqaction('${data.username}',true)"><i class="fas fa-check" style="font-size:20px;margin-left:15px;"></i> Allow</a>
 
