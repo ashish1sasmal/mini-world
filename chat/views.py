@@ -21,9 +21,12 @@ from .email import emailSend
 from cryptography.fernet import Fernet
 from Miniworld.settings import FERNET_KEY, HOST
 from django.urls import reverse
+from .serializers import MessageSerializer, GroupSerializer
 
 import re
 email_regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
+
+from django.core.paginator import Paginator
 
 def encode(id):
     # print(FERNET_KEY)
@@ -67,7 +70,6 @@ def acceptInvite(request,code):
     #     code = fernet.decrypt(key).decode()
     #     grp = ChatGroup.objects.get(code=code)
     return HttpResponse("<h3>Under development</h3>")
-
 
 @login_required
 def leavegroup(request):
@@ -115,7 +117,6 @@ def autocomplete(request):
         group = ChatGroup.objects.get(code = code)
         return redirect("chat:room" ,room_code=code)
 
-
 @login_required
 def user_logout(request):
     try:
@@ -130,21 +131,25 @@ def checkLogin(request):
     else:
         return JsonResponse(status=400)
 
-from .serializers import MessageSerializer, GroupSerializer
+def messagePaginator(group, page=1):
+    msgs = ChatMessage.objects.filter(group = group).order_by("-created_on")
+    paginator = Paginator(msgs, 15)
+    page_obj = paginator.get_page(page)
+    return(page_obj)
+
 @login_required
 def getMessages(request):
     try:
         grpcode = request.GET.get("grpcode")
         group = ChatGroup.objects.get(code=grpcode)
-        msgs = ChatMessage.objects.filter(group = group)
-        # print()
         if request.user not in group.members.all():
             raise Exception
+        msgs = ChatMessage.objects.filter(group = group).order_by("created_on")
         files = msgs.exclude(file__isnull=True)
-        seri = MessageSerializer(msgs,many=True)
-        seri2 = MessageSerializer(files,many=True)
-        seri3 = list(ChatGroup.objects.get(code=grpcode).members.all().values("username"))
-        seri4 = list(ChatGroup.objects.get(code=grpcode).online.all().values("username"))
+        seri = MessageSerializer(msgs,many=True)            # list of messages
+        seri2 = MessageSerializer(files,many=True)          # list of files
+        seri3 = list(ChatGroup.objects.get(code=grpcode).members.all().values("username"))      # all memebers list
+        seri4 = list(ChatGroup.objects.get(code=grpcode).online.all().values("username"))       # all online members list
         d = {
             "msgs":seri.data,
             "files":seri2.data,
@@ -152,6 +157,7 @@ def getMessages(request):
             "online":seri4,
             "status":200
         }
+        # print(messagePaginator(group))
         return JsonResponse(d,safe=False,status=200)
     except Exception as e:
         return JsonResponse({"status":400},safe=False,status=400)
@@ -170,7 +176,7 @@ def home(request):
     else:
         return render(request,"chat/home2.html")
 
-
+@login_required
 def main(request):
     if request.method == "GET":
         chlist = set()
@@ -294,7 +300,9 @@ def requestaction(request):
         msg["type"] =  'request_status'
         msg["result"] = action
         msg["code"] = code
+        msg2 = {"type":"removerequest", "username":username, "remove":True}
         channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(code,msg2)
         async_to_sync(channel_layer.group_send)(username,msg)
         return JsonResponse({"action":action,"username":username})
 

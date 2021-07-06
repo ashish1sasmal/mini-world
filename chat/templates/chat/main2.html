@@ -809,6 +809,9 @@
 					        	</li>
                                 `+ document.getElementById("lobby").innerHTML;
                             }
+							else if (data.remove){
+								document.getElementById(`${data.username}_req`).remove();
+							}
 							scrollTo();
                             };
                     }

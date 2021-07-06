@@ -73,6 +73,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
         username = text_data_json.get('username',None)
         file_ids = text_data_json.get("file_ids",None)
         del_msg_id = text_data_json.get("del_msg_id",None)
+        remove = text_data_json.get("remove",None)
         if file_ids:
             file_sizes = text_data_json.get("file_sizes",None)
             file_names = text_data_json.get("file_names",None)
@@ -106,7 +107,14 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
                     'username': username,
                 }
             )
-
+        elif remove:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'removerequest',
+                    'username': username,
+                }
+            )
         else:
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -152,6 +160,14 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'username': username,
             "request":request
+        }))
+
+    async def removerequest(self,event):
+        username = event.get("username")
+        remove = "true"
+        await self.send(text_data=json.dumps({
+            "username":username,
+            "remove":remove
         }))
 
     @database_sync_to_async
