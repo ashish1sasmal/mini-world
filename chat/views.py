@@ -224,6 +224,7 @@ def download_file(request,msg_id):
     msg = ChatMessage.objects.get(id=msg_id)
     if msg.file == None:
         return HttpResponse("Sorry file doesn't exists")
+    print(msg.download_temp_url())
     return redirect(msg.download_temp_url())
 
 @login_required
